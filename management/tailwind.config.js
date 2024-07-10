@@ -1,6 +1,9 @@
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
+  corePlugins: {
+    // preflight: false,
+  },
   darkMode: ["class"],
   content: [
     "./pages/**/*.{js,jsx}",
