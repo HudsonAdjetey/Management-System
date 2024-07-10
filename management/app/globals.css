@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css */
+
+:root {
+  --font-robot: "Roboto", sans-serif;
+}
+
+body {
+  @apply min-h-screen  font-roboto antialiased;
+}
+
+body.dark {
+  @apply bg-dark-300;
+}
+
 /* ========================================== TAILWIND STYLES */
 @layer base {
   /* Remove scrollbar */

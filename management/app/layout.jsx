@@ -1,6 +1,9 @@
+// app/layout.js
+
 import { Roboto as Robot } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const fontRoboto = Robot({
   subsets: ["latin"],
@@ -11,7 +14,6 @@ const fontRoboto = Robot({
 
 export const metadata = {
   title: "Management System",
-  // school management system
   author: "Your Name",
   keywords: ["management system", "school"],
   image: "/favicon.png",
@@ -21,14 +23,21 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-dark-300 font-roboto antialiased",
+          "min-h-screen font-roboto  antialiased",
           fontRoboto.variable
         )}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
