@@ -28,7 +28,7 @@ const PanelForm = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <section className="mb-12 space-y-4">
-          <h1 className="header">Welcome... </h1>
+          <h1 className="header  ">Welcome... </h1>
           <p className="text-dark-700">Get started</p>
         </section>
         <CustomField
