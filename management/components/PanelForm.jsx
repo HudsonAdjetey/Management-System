@@ -20,14 +20,14 @@ const PanelForm = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = () => {
+    console.log("yep");
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <section className="mb-12 space-y-4">
+        <section className="my-12 space-y-4">
           <h1 className="header  ">Welcome... </h1>
           <p className="text-dark-700">Get started</p>
         </section>

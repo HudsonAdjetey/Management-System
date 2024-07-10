@@ -10,15 +10,16 @@ import Link from "next/link";
 const page = ({ searchParams }) => {
   const isAdmin = searchParams?.admin === "true";
   return (
-    <section className="flex  justify-between h-screen max-h-screen ">
+    <section className="flex  justify-between  h-screen max-h-screen ">
       {/* Intro header */}
-      <div className="section_main   remove-scrollbar flex flex-col justify-between ">
+      <div className="section_main remove-scrollbar flex flex-col justify-between ">
         <div className="flex gap-3 items-center mt-3  ">
           <Image
             src={Images.logo}
             width={40}
             height={40}
             className="aspect-square"
+            alt="logo"
           />
           <h1>Management System</h1>
         </div>
@@ -31,7 +32,7 @@ const page = ({ searchParams }) => {
             © 2024 SwiftTech
           </p>
           <Link href="/?admin=true" className="text-blue-500">
-            Admin
+            Administrator
           </Link>
         </div>
       </div>
