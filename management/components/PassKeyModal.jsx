@@ -1,138 +1,241 @@
-"use client";
-import { useState, useEffect } from "react";
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
-import { app } from "../lib/firebase";
-import { useRouter } from "next/router";
+import React, { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "./ui/alert-dialog";
 import Image from "next/image";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import { Icons } from "./constants/icons";
+import { Input } from "./ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserFormValidation } from "@/lib/Validation";
+import { Form } from "./ui/form";
+import CustomField from "./CustomFormFields";
+import { Button } from "./ui/button";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import "react-phone-number-input/style.css";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "@/firebase";
 
-const PassKeyModal = ({}) => {
+const PassKeyModal = () => {
   const router = useRouter();
-  const [openModal, setOpenModal] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState(null);
-  const [sentOtp, setSentOtp] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [open, setOpen] = useState(true);
   const [error, setError] = useState("");
-  const auth = getAuth(app);
+  const [otp, setOtp] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [resendCountDown, setResendCountDown] = useState(0);
+  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [adminID, setAdminID] = useState("asd454534534534534533363463");
+  const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
+  const [isPending, startTransition] = useTransition();
+  const [userAdmin, setUserAdmin] = useState({});
+  const [requestIDPage, setRequestIDPage] = useState(true);
 
   useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        {
-          size: "normal",
-          callback: (response) => {
-            handleSendOtp();
-          },
-          "expired-callback": () => {
-            window.recaptchaVerifier.reset();
-          },
-        },
-        auth
-      );
+    let timer;
+    if (resendCountDown > 0) {
+      timer = setTimeout(() => {
+        setResendCountDown((prev) => prev - 1);
+      }, 1000);
     }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [resendCountDown]);
+
+  useEffect(() => {
+    const recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+      }
+    );
+    setRecaptchaVerifier(recaptchaVerifier);
+    return () => {
+      recaptchaVerifier.clear();
+    };
   }, [auth]);
 
-  const handleSendOtp = async () => {
-    try {
-      const confirmationResult = await signInWithPhoneNumber(
-        auth,
-        phoneNumber,
-        window.recaptchaVerifier
-      );
-      setConfirmationResult(confirmationResult);
-      setSentOtp(true);
-    } catch (error) {
-      setError(error.message);
-      console.error(error);
+  const form = useForm({
+    resolver: zodResolver(UserFormValidation),
+    defaultValues: {
+      devID: "",
+      phone: "",
+    },
+  });
+
+  useEffect(() => {
+    if (otp.length === 6) {
+      verifyOtp();
     }
+  }, [otp]);
+
+  const verifyOtp = async () => {
+    startTransition(async () => {
+      setError("");
+      if (!confirmationResult) {
+        setError("Please request OTP first");
+        return;
+      }
+      try {
+        await confirmationResult.confirm(otp);
+        router.replace("/dashboard");
+      } catch (error) {
+        console.log(error);
+        setError("Failed to verify OTP. Please check the OTP");
+      }
+    });
   };
 
-  const handleConfirmOtp = async () => {
-    try {
-      if (confirmationResult) {
-        await confirmationResult.confirm(otp);
-        router.push("/dashboard");
-      } else {
-        setError("OTP was not sent, please try again.");
+  const requestOTP = async (e) => {
+    e?.preventDefault();
+    setResendCountDown(60);
+    startTransition(async () => {
+      setError("");
+      if (!recaptchaVerifier) {
+        return setError("RecaptchaVerifier not initialized");
       }
-    } catch (error) {
-      setError(error.message);
-      console.error(error);
+      try {
+        const { phone } = form.getValues();
+        const confirmResult = await signInWithPhoneNumber(
+          auth,
+          phone,
+          recaptchaVerifier
+        );
+        setConfirmationResult(confirmResult);
+        setSuccess("Sent successfully");
+      } catch (error) {
+        setResendCountDown(0);
+        if (error.code === "auth/invalid-phone-number") {
+          setError("Invalid phone number. Please check the number.");
+        } else if (error.code === "auth/too-many-requests") {
+          setError("Too many requests. Please try again later.");
+        } else {
+          setError("Failed to send OTP. Please try again.");
+        }
+      }
+    });
+  };
+
+  const onSubmit = async (values) => {
+    alert("Hello");
+    const { devID, phone } = form.getValues();
+    const adminUser = {
+      devID: devID,
+      phone: phone,
+    };
+    console.log(adminUser);
+    if (adminUser.devID === adminID) {
+      setUserAdmin(adminUser);
+      requestOTP();
+      setRequestIDPage(false);
+      console.log("Nothing here to be seen");
+    } else {
+      console.log("Invalid development ID");
+      setError("Invalid Development ID");
+      return;
     }
   };
 
   const closeModal = () => {
-    setOpenModal(false);
-    setPhoneNumber("");
-    setConfirmationResult(null);
-    setSentOtp(false);
-    setOtp("");
-    router.push("/");
+    setOpen(false);
+    setError("");
+    router.replace("/");
   };
 
   return (
-    <AlertDialog open={openModal} onOpenChange={setOpenModal}>
-      <AlertDialogContent>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogContent className="shad-alert-dialog bg-dark-300">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-start justify-between">
             Administrator Access Verification
             <Image
-              src={Icons.Close}
               alt="close"
               width={20}
               height={20}
               onClick={closeModal}
-              className="cursor-pointer"
+              src={Icons.Close}
             />
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            Enter the 6-digit OTP sent to your registered phone number.
-          </AlertDialogDescription>
+          {requestIDPage ? (
+            <>
+              <AlertDialogDescription>
+                Enter the administrator's ID to continue.
+              </AlertDialogDescription>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <CustomField
+                    fieldType="input"
+                    control={form.control}
+                    name="devID"
+                    label="Development ID"
+                    placeholder="433_034C9A334"
+                    register={form.register}
+                    icon={Icons.IconDataBase}
+                    admin={true}
+                  />
+                  <CustomField
+                    fieldType="phoneInput"
+                    control={form.control}
+                    name="phone"
+                    label="Phone Number"
+                    placeholder="+233"
+                    register={form.register}
+                    phone={true}
+                  />
+                  <Button
+                    onClick={onSubmit}
+                    type="submit"
+                    className="bg-blue-300 mt-3"
+                  >
+                    Confirm Credentials
+                  </Button>
+                </form>
+              </Form>
+            </>
+          ) : (
+            <>
+              <AlertDialogDescription>
+                Enter the Confirmation Code
+              </AlertDialogDescription>
+              <div>
+                <InputOTP
+                  value={otp}
+                  onChange={(value) => setOtp(value)}
+                  maxLength={6}
+                >
+                  <InputOTPGroup className="shad-otp">
+                    {Array.from({ length: 6 }).map((_, index) => (
+                      <InputOTPSlot
+                        index={index}
+                        key={index}
+                        className="shad-otp-slot"
+                      />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+                <Button
+                  className="bg-blue-300 mt-3"
+                  onClick={requestOTP}
+                  disabled={resendCountDown > 0 || isPending}
+                >
+                  {resendCountDown > 0
+                    ? `Resend OTP in ${resendCountDown}`
+                    : isPending
+                    ? "Sending OTP"
+                    : "Send OTP"}
+                </Button>
+              </div>
+            </>
+          )}
         </AlertDialogHeader>
-        <div>
-          <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-            <InputOTPGroup className="shad-otp">
-              {[...Array(6)].map((_, index) => (
-                <InputOTPSlot
-                  key={index}
-                  className="shad-otp-slot"
-                  index={index}
-                />
-              ))}
-            </InputOTPGroup>
-          </InputOTP>
-          {error && <p className="shad-error text-14-regular mt-4">{error}</p>}
-        </div>
-        <AlertDialogFooter>
-          <AlertDialogAction
-            onClick={handleConfirmOtp}
-            className="shad-primary-btn w-full"
-          >
-            Enter Admin Passkey
-          </AlertDialogAction>
-        </AlertDialogFooter>
-        <div id="recaptcha-container"></div>
       </AlertDialogContent>
+      <div id="recaptcha-container" />
     </AlertDialog>
   );
 };

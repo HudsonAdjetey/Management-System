@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PhoneInput from "react-phone-number-input";
 
 import {
   FormControl,
@@ -17,6 +18,7 @@ const FORM_TYPES = {
   RADIO: "radio",
   FILE: "file",
   DATE: "date",
+  PHONE_INPUT: "phoneInput",
 };
 
 const RenderInput = ({ field, props, register }) => {
@@ -47,6 +49,20 @@ const RenderInput = ({ field, props, register }) => {
           </FormControl>
         </div>
       );
+    case FORM_TYPES.PHONE_INPUT:
+      return (
+        <FormControl>
+          <PhoneInput
+            defaultCountry="GH"
+            placeholder={props.placeholder}
+            international
+            withCountryCallingCode
+            className="input-phone"
+            value={field.value}
+            onChange={field.onChange}
+          />
+        </FormControl>
+      );
   }
 };
 
@@ -56,10 +72,12 @@ const CustomField = (props) => {
     <FormField
       control={control}
       name={name}
-          label={label}
+      label={label}
       render={({ field }) => (
         <FormItem className="flex-1 mb-4">
-          <FormLabel className="shad-input-label">{label}</FormLabel>
+          <FormLabel className="shad-input-label">
+            {props.admin || props.phone ? "" : label}
+          </FormLabel>
 
           <RenderInput field={field} props={props} />
           <FormMessage className="shad-error" />

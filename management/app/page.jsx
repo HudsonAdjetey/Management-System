@@ -6,12 +6,20 @@ import Image from "next/image";
 import React from "react";
 import PanelForm from "@/components/PanelForm";
 import Link from "next/link";
+import PassKeyModal from "@/components/PassKeyModal";
+import dynamic from "next/dynamic";
+
+const DynamicPassKeyModal = dynamic(() => import("@/components/PassKeyModal"), {
+  ssr: false,
+});
 
 const page = ({ searchParams }) => {
   const isAdmin = searchParams?.admin === "true";
   return (
     <section className="flex  justify-between  h-screen max-h-screen ">
       {/* Intro header */}
+      {isAdmin && <DynamicPassKeyModal />}
+      <DynamicPassKeyModal />
       <div className="section_main remove-scrollbar flex flex-col justify-between ">
         <div className="flex gap-3 items-center mt-3  ">
           <Image
