@@ -1,47 +1,46 @@
-"use client";
-import { useState, useEffect, useTransition } from "react";
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
+import React, { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "./ui/alert-dialog";
 import Image from "next/image";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import { Icons } from "./constants/icons";
-import { auth } from "@/firebase";
 import { Input } from "./ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserFormValidation } from "@/lib/Validation";
+import { Form } from "./ui/form";
+import CustomField from "./CustomFormFields";
 import { Button } from "./ui/button";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import "react-phone-number-input/style.css";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "@/firebase";
+import LoadingIndicator from "./LoadingIndicator";
 
 const PassKeyModal = () => {
+  const router = useRouter();
+  const [open, setOpen] = useState(true);
+  const [error, setError] = useState("");
   const [otp, setOtp] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState("");
-  const [resendCountDown, setResendCountdown] = useState(0);
-
-  const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [resendCountDown, setResendCountDown] = useState(0);
   const [confirmationResult, setConfirmationResult] = useState(null);
+  const [adminID, setAdminID] = useState("asd454534534534534533363463");
+  const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
   const [isPending, startTransition] = useTransition();
-
+  const [userAdmin, setUserAdmin] = useState({});
+  const [requestIDPage, setRequestIDPage] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     let timer;
     if (resendCountDown > 0) {
       timer = setTimeout(() => {
-        setResendCountdown(resendCountDown - 1);
+        setResendCountDown((prev) => prev - 1);
       }, 1000);
     }
     return () => {
@@ -57,17 +56,22 @@ const PassKeyModal = () => {
         size: "invisible",
       }
     );
-
     setRecaptchaVerifier(recaptchaVerifier);
-
     return () => {
       recaptchaVerifier.clear();
     };
   }, [auth]);
 
+  const form = useForm({
+    resolver: zodResolver(UserFormValidation),
+    defaultValues: {
+      devID: "",
+      phone: "",
+    },
+  });
+
   useEffect(() => {
-    const hasEnteredAllDigits = otp.length === 6;
-    if (hasEnteredAllDigits) {
+    if (otp.length === 6) {
       verifyOtp();
     }
   }, [otp]);
@@ -75,58 +79,42 @@ const PassKeyModal = () => {
   const verifyOtp = async () => {
     startTransition(async () => {
       setError("");
-
       if (!confirmationResult) {
-        setError("Please request OTP first.");
+        setError("Please request OTP first");
         return;
       }
-
       try {
-        await confirmationResult?.confirm(otp);
-        router.replace("/");
+        await confirmationResult.confirm(otp);
+        router.replace("/dashboard");
       } catch (error) {
         console.log(error);
-
-        setError("Failed to verify OTP. Please check the OTP.");
+        setError("Failed to verify OTP. Please check the OTP");
       }
     });
   };
 
-  const closeModal = () => {
-    setOpenModal(false);
-    setPhoneNumber("");
-    setSentOtp(false);
-    setOtp("");
-    router.push("/");
-  };
-
-  const requestOtp = async (e) => {
+  const requestOTP = async (e) => {
     e?.preventDefault();
-    setResendCountdown(60);
-
+    setResendCountDown(60);
     startTransition(async () => {
       setError("");
-
       if (!recaptchaVerifier) {
-        return setError("RecaptchaVerifier is not initialized.");
+        return setError("RecaptchaVerifier not initialized");
       }
-
       try {
-        const confirmationResult = await signInWithPhoneNumber(
+        const { phone } = form.getValues();
+        const confirmResult = await signInWithPhoneNumber(
           auth,
-          phoneNumber,
+          phone,
           recaptchaVerifier
         );
-
-        setConfirmationResult(confirmationResult);
-        setSuccess("OTP sent successfully.");
-      } catch (err) {
-        console.log(err);
-        setResendCountdown(0);
-
-        if (err.code === "auth/invalid-phone-number") {
+        setConfirmationResult(confirmResult);
+        setSuccess("Sent successfully");
+      } catch (error) {
+        setResendCountDown(0);
+        if (error.code === "auth/invalid-phone-number") {
           setError("Invalid phone number. Please check the number.");
-        } else if (err.code === "auth/too-many-requests") {
+        } else if (error.code === "auth/too-many-requests") {
           setError("Too many requests. Please try again later.");
         } else {
           setError("Failed to send OTP. Please try again.");
@@ -135,79 +123,124 @@ const PassKeyModal = () => {
     });
   };
 
-  const loadingIndicator = (
-    <div role="status" className="flex justify-center">
-      <svg
-        aria-hidden="true"
-        className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-green-600"
-        viewBox="0 0 100 101"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-          fill="currentColor"
-        />
-        <path
-          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-          fill="currentFill"
-        />
-      </svg>
-      <span className="sr-only">Loading...</span>
-    </div>
-  );
+  const onSubmit = async (values) => {
+    alert("Hello");
+    const { devID, phone } = form.getValues();
+    const adminUser = {
+      devID: devID,
+      phone: phone,
+    };
+    console.log(adminUser);
+    if (adminUser.devID === adminID) {
+      setUserAdmin(adminUser);
+      requestOTP();
+      setRequestIDPage(false);
+      setIsLoading(true);
+      console.log("Nothing here to be seen");
+    } else {
+      console.log("Invalid development ID");
+      setError("Invalid Development ID");
+      return;
+    }
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+    setError("");
+    router.replace("/");
+  };
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      {!confirmationResult && (
-        <form onSubmit={requestOtp}>
-          <Input
-            className="text-black"
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
-          <p className="text-xs text-gray-400 mt-2">
-            Please enter your number with the country code (i.e. +44 for UK)
-          </p>
-          <Button
-            disabled={!phoneNumber || isPending || resendCountDown > 0}
-            onClick={() => requestOtp()}
-            className="mt-5"
-          >
-            {resendCountDown > 0
-              ? `Resend OTP in ${resendCountDown}`
-              : isPending
-              ? "Sending OTP"
-              : "Send OTP"}
-          </Button>
-        </form>
-      )}
+    <div>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent className="shad-alert-dialog bg-dark-300">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-start justify-between">
+              Administrator Access Verification
+              <Image
+                alt="close"
+                width={20}
+                height={20}
+                onClick={closeModal}
+                src={Icons.Close}
+              />
+            </AlertDialogTitle>
+            {requestIDPage ? (
+              <>
+                <AlertDialogDescription>
+                  Enter the administrator's ID to continue.
+                </AlertDialogDescription>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <CustomField
+                      fieldType="input"
+                      control={form.control}
+                      name="devID"
+                      label="Development ID"
+                      placeholder="433_034C9A334"
+                      register={form.register}
+                      icon={Icons.IconDataBase}
+                      admin={true}
+                    />
+                    <CustomField
+                      fieldType="phoneInput"
+                      control={form.control}
+                      name="phone"
+                      label="Phone Number"
+                      placeholder="+233"
+                      register={form.register}
+                      phone={true}
+                    />
+                    <Button
+                      onClick={onSubmit}
+                      type="submit"
+                      className="bg-blue-300 mt-3"
+                    >
+                      Confirm Credentials
+                    </Button>
+                  </form>
+                </Form>
+              </>
+            ) : (
+              <>
+                <AlertDialogDescription>
+                  Enter the Confirmation Code
+                </AlertDialogDescription>
+                <div>
+                  <InputOTP
+                    value={otp}
+                    onChange={(value) => setOtp(value)}
+                    maxLength={6}
+                  >
+                    <InputOTPGroup className="shad-otp">
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <InputOTPSlot
+                          index={index}
+                          key={index}
+                          className="shad-otp-slot"
+                        />
+                      ))}
+                    </InputOTPGroup>
+                  </InputOTP>
+                  <Button
+                    className="bg-blue-300 mt-3"
+                    onClick={requestOTP}
+                    disabled={resendCountDown > 0 || isPending}
+                  >
+                    {resendCountDown > 0
+                      ? `Resend OTP in ${resendCountDown}`
+                      : isPending
+                      ? "Sending OTP"
+                      : "Send OTP"}
+                  </Button>
+                </div>
+              </>
+            )}
+          </AlertDialogHeader>
+        </AlertDialogContent>
 
-      {confirmationResult && (
-        <InputOTP maxLength={6} value={otp} onChange={(value) => setOtp(value)}>
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-          </InputOTPGroup>
-          <InputOTPGroup>
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-          </InputOTPGroup>
-        </InputOTP>
-      )}
-
-      <div className="p-10 text-center">
-        {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">{success}</p>}
-      </div>
-
-      <div id="recaptcha-container" />
-
-      {isPending && loadingIndicator}
-      <div id="recaptcha-container" />
+        <div id="recaptcha-container" />
+      </AlertDialog>
     </div>
   );
 };

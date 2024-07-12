@@ -46,6 +46,7 @@ const config = {
           600: "#76828D",
           700: "#ABB8C4",
         },
+        overlayDark: "rgba(0, 0, 0, 0.77)",
       },
       fontFamily: {
         roboto: ["Roboto", "sans-serif"],

@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import "react-phone-number-input/style.css";
 
 const FORM_TYPES = {
   INPUT: "input",
@@ -54,7 +55,7 @@ const RenderInput = ({ field, props, register }) => {
         <FormControl>
           <PhoneInput
             defaultCountry="GH"
-            placeholder={props.placeholder}
+            // placeholder={props.placeholder}
             international
             withCountryCallingCode
             className="input-phone"
