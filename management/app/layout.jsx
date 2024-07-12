@@ -4,6 +4,7 @@ import { Roboto as Robot } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import TanstackProvider from "@/lib/providers/TanstackProvider";
 
 const fontRoboto = Robot({
   subsets: ["latin"],
@@ -36,7 +37,7 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TanstackProvider>{children}</TanstackProvider>
         </ThemeProvider>
       </body>
     </html>
