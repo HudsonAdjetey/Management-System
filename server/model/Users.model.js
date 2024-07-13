@@ -1,0 +1,41 @@
+const { Schema, model, Schema } = require("mongoose");
+
+const UserSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 50,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    },
+    devID: {
+      //   matches the user id
+      type: String,
+      required: true,
+      match: /^[a-fA-F0-9]{24}$/,
+    },
+
+    password: {
+      //   Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character
+      type: String,
+      required: [true, "Password is required."],
+      minlength: 8,
+      match:
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Users = model("users", UserSchema);
+
+moduel.exports = Users;
