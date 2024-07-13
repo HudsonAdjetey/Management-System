@@ -2,10 +2,16 @@ const express = require("express");
 require("dotenv").config();
 const path = require("path");
 const app = express();
-const bodyParser = require("bodyParser");
+const bodyParser = require("body-parser");
 const TempUsersRouter = require("./router/tempUsersRoute");
 const UserRouter = require("./router/usersRoute");
+const compression = require("compression");
+const connectDB = require("./config/dbConfig");
 // read json
+
+// connect to databse
+connectDB();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
