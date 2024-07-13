@@ -3,7 +3,7 @@ require("dotenv").config();
 const path = require("path");
 const app = express();
 const bodyParser = require("bodyParser");
-const tempAdminRouter = require("./router/tempUsers");
+const TempUsersRouter = require("./router/tempUsersRoute");
 const UserRouter = require("./router/usersRoute");
 // read json
 app.use(express.json());
@@ -39,8 +39,8 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, "public")));
 
 // routers
-app.use(tempAdminRouter);
-app.use(UserRouter);
+app.use("/user/", TempUsersRouter);
+// app.use(UserRouter);
 
 // 404 Handler ~ Acceptance formats
 app.use((req, res, next) => {

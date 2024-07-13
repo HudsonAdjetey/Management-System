@@ -2,7 +2,7 @@ const { model, moodels, Schema, Types, models } = require("mongoose");
 
 const tempUserSchema = new Schema(
   {
-    adminName: {
+    devName: {
       type: String,
       required: [true, "Admin Name required"],
     },
@@ -12,6 +12,7 @@ const tempUserSchema = new Schema(
       required: [true, "Dev ID required"],
       default: Types.ObjectId,
     },
+    phoneNumber: String,
     otp: String,
     otpExpiresAt: Date,
     otpAttempts: Number,
