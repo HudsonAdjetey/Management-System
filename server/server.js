@@ -5,6 +5,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const TempUsersRouter = require("./router/tempUsersRoute");
 const UserRouter = require("./router/usersRoute");
+const { logger, logEvent } = require("./middleware/logger");
+const { notFound, errorHandler } = require("./middleware/errorHandler");
+
+const cors = require("cors");
 const compression = require("compression");
 const connectDB = require("./config/dbConfig");
 const corsOptions = require("./config/corsOptions");
@@ -64,6 +68,10 @@ app.use((req, res, next) => {
     res.type("txt").send("Not found");
   }
 });
+
+// Error Handling Middleware
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT_PRIVATE || 5060;
 

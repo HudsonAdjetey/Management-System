@@ -15,7 +15,7 @@ const AdminAccessDialog = ({ form, setOpen, open, closeModal, onSubmit }) => {
   return (
     <AlertDialog open={open} onOpenChange={closeModal}>
       <AlertDialogContent className="shad-alert-dialog">
-        <AlertDialogTitle className=" flex items-start justify-between">
+        <AlertDialogTitle className="flex items-start justify-between">
           New Administrator's Access Verification
           <Image
             alt="close"
@@ -29,12 +29,12 @@ const AdminAccessDialog = ({ form, setOpen, open, closeModal, onSubmit }) => {
           Enter the administrator's ID to continue.
         </AlertDialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={onSubmit}>
             <CustomField
               fieldType="input"
               control={form.control}
               name="devName"
-              label="Adminstrator Name"
+              label="Administrator Name"
               placeholder="Hannah Kane"
               register={form.register}
               icon={Icons.IconUser}
@@ -56,7 +56,6 @@ const AdminAccessDialog = ({ form, setOpen, open, closeModal, onSubmit }) => {
               label="Phone Number"
               placeholder="+233"
               register={form.register}
-              // phone={true}
             />
             <Button type="submit" className="bg-blue-300 mt-8 flex ml-auto">
               Confirm Credentials

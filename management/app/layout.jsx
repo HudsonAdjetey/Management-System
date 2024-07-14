@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import TanstackProvider from "@/lib/providers/TanstackProvider";
+import axios from "axios";
 
 const fontRoboto = Robot({
   subsets: ["latin"],
@@ -22,7 +23,10 @@ export const metadata = {
     "A simple, efficient, and user-friendly management system for school.",
 };
 
+
+
 export default function RootLayout({ children }) {
+ 
   return (
     <html lang="en" suppressHydrationWarning>
       <body

@@ -3,6 +3,8 @@ const TempUsers = require("../model/tempUsers.model");
 const Users = require("../model/Users.model");
 const fs = require("fs");
 const AvatarContainer = require("../utils/AvatarConfig");
+
+
 const CheckTempUser = asyncHandler(async (req, res, next) => {
   const { devID, phoneNumber, devName } = req.body;
 
@@ -20,13 +22,15 @@ const CheckTempUser = asyncHandler(async (req, res, next) => {
       });
     }
 
-    const createdDEVID = await TempUsers.findByIdAndUpdate(
+    // Here, you are trying to update the `devID` field with itself.
+    // If you intended to update something else, change this part accordingly.
+    const updatedTempUser = await TempUsers.findByIdAndUpdate(
       devID,
-      { devID },
+      { $set: { devID: devID } }, // Update this line if necessary
       { new: true, upsert: true }
     );
 
-    if (!createdDEVID) {
+    if (!updatedTempUser) {
       return res.status(400).json({
         message: "Failed to update devID",
       });
@@ -34,12 +38,14 @@ const CheckTempUser = asyncHandler(async (req, res, next) => {
 
     return res.status(200).json({
       message: "User check successful",
+      user: updatedTempUser, // Return the updated user details if needed
     });
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
+
 
 // Middleware to store the OTP
 const StoreOtp = asyncHandler(async (req, res, next) => {
