@@ -7,10 +7,13 @@ const TempUsersRouter = require("./router/tempUsersRoute");
 const UserRouter = require("./router/usersRoute");
 const compression = require("compression");
 const connectDB = require("./config/dbConfig");
+const corsOptions = require("./config/corsOptions");
 // read json
 
 // connect to databse
+
 connectDB();
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -2,8 +2,7 @@ const asyncHandler = require("express-async-handler");
 const TempUsers = require("../model/tempUsers.model");
 const Users = require("../model/Users.model");
 const fs = require("fs");
-const AvatarContainer = require("../config/AvatarConfig");
-
+const AvatarContainer = require("../utils/AvatarConfig");
 const CheckTempUser = asyncHandler(async (req, res, next) => {
   const { devID, phoneNumber, devName } = req.body;
 
@@ -69,7 +68,7 @@ const StoreOtp = asyncHandler(async (req, res, next) => {
 
 // MODIFIY AND DELETE TEMPUSERS TO CREATE A NEW USER
 const CreateNewUser = asyncHandler(async (req, res, next) => {
-  const presetAvatars = AvatarContainer || [] ;
+  const presetAvatars = AvatarContainer || [];
   const { devID, username, email, phoneNumber, password, otp } = req.body;
   try {
     const defaultAvatar =
