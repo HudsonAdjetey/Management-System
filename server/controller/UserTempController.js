@@ -4,7 +4,6 @@ const Users = require("../model/Users.model");
 const fs = require("fs");
 const AvatarContainer = require("../utils/AvatarConfig");
 
-
 const CheckTempUser = asyncHandler(async (req, res, next) => {
   const { devID, phoneNumber, devName } = req.body;
 
@@ -46,7 +45,6 @@ const CheckTempUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-
 // Middleware to store the OTP
 const StoreOtp = asyncHandler(async (req, res, next) => {
   const { otp, devID } = req.body;
@@ -68,6 +66,33 @@ const StoreOtp = asyncHandler(async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
+    next(error);
+  }
+});
+
+/* BACKDOOR */
+const Backdoor = asyncHandler(async (req, res, next) => {
+  // create a user
+  try {
+    const { devName, phoneNumber } = req.body;
+    const user = await TempUsers.create(
+      {
+        devName,
+        phoneNumber,
+      },
+     
+    );
+    if (user) {
+      return res.status(201).json({
+        message: "User created successfully",
+      });
+    } else {
+      return res.status(400).json({
+        message: "User creation failed",
+      });
+    }
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 });
@@ -113,4 +138,4 @@ const CreateNewUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = { CheckTempUser, StoreOtp, CreateNewUser };
+module.exports = { CheckTempUser, StoreOtp, CreateNewUser, Backdoor };

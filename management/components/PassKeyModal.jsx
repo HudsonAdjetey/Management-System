@@ -25,7 +25,7 @@ const PassKeyModal = ({ open, setOpen }) => {
     defaultValues: {
       devID: "",
       devName: "",
-      phone: "",
+      phoneNumber: "",
     },
   });
   const apiKey = process.env.API_KEY;
@@ -43,35 +43,33 @@ const PassKeyModal = ({ open, setOpen }) => {
     }
   }, [open, isLoading]);
 
-  const values = form.getValues();
-
   // using useMutation of tanstack query
   const queryClient = useQueryClient();
   const dataCheckTempUserMutation = useMutation({
-    mutationKey: ["checkTempUser", values.phone],
+    mutationKey: ["checkTempUser"],
     mutationFn: async (data) => {
-      const apiReq = await axios.put(
-        "http://localhost:5060/user/temp-user/check",
-        data
-      );
+      const apiReq = await api.put("user/temp-user/check", data);
+      return apiReq;
     },
     // enable when values are present
-    enabled:
-      values.devID !== "" && values.devName !== "" && values.phone !== "",
   });
   const onSubmit = async (e) => {
+    const values = form.getValues();
+
     e.preventDefault();
     console.log("hello");
     // Handle form submission
     try {
       const requestCheck = await dataCheckTempUserMutation.mutateAsync({
-        phone: values.phone,
+        phoneNumber: values.phoneNumber,
         devID: values.devID,
         devName: values.devName,
       });
       console.log(requestCheck);
     } catch (err) {
       console.log(err);
+    } finally {
+      console.log(values);
     }
   };
 

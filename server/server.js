@@ -5,8 +5,8 @@ const app = express();
 const bodyParser = require("body-parser");
 const TempUsersRouter = require("./router/tempUsersRoute");
 const UserRouter = require("./router/usersRoute");
-const { logger, logEvent } = require("./middleware/logger");
-const { notFound, errorHandler } = require("./middleware/errorHandler");
+/* const { logger, logEvent } = require("./middleware/logger");
+const { notFound, errorHandler } = require("./middleware/errorHandler"); */
 
 const cors = require("cors");
 const compression = require("compression");
@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // set headers
 app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  next();
 });
 
 // middleware setup
@@ -58,7 +59,7 @@ app.use("/user/", TempUsersRouter);
 // 404 Handler ~ Acceptance formats
 app.use((req, res, next) => {
   // loging events
-  logEvent(`"Not Found" ${req.method} ${req.path}`, "errorLog.log");
+  //   logEvent(`"Not Found" ${req.method} ${req.path}`, "errorLog.log");
   res.status(404);
   if (req.accepts("html")) {
     res.sendFile(path.join(__dirname, "views", "404.html"));
@@ -70,10 +71,10 @@ app.use((req, res, next) => {
 });
 
 // Error Handling Middleware
-app.use(notFound);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(errorHandler);
 
-const PORT = process.env.PORT_PRIVATE || 5060;
+const PORT = process.env.PORT_PRIVATE || 4090;
 
 app.listen(PORT, () => {
   console.log("Running on port ", PORT);

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const api = axios.create({
   // for localhost
-  baseURL: "http://localhost:5060",
+  baseURL: "http://localhost:4090",
   // for production
   // baseURL: "https://your-production-url",
   headers: {

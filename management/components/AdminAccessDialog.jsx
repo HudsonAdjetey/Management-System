@@ -52,7 +52,7 @@ const AdminAccessDialog = ({ form, setOpen, open, closeModal, onSubmit }) => {
             <CustomField
               fieldType="phoneInput"
               control={form.control}
-              name="phone"
+              name="phoneNumber"
               label="Phone Number"
               placeholder="+233"
               register={form.register}

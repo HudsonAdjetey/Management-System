@@ -5,12 +5,13 @@ const tempUserSchema = new Schema(
     devName: {
       type: String,
       required: [true, "Admin Name required"],
+      //   should be unique
+      unique: true,
     },
     // create an object id
     devID: {
       type: Schema.Types.ObjectId,
-      required: [true, "Dev ID required"],
-      default: Types.ObjectId,
+      //   default: () => new Types.ObjectId(),
     },
     phoneNumber: String,
     otp: String,

@@ -1,9 +1,16 @@
 import { models, model, Schema } from "mongoose";
 
 const UserSchema = new Schema({
-  adminName: String,
+  devName: {
+    type: String,
+    required: true,
+  },
   email: String,
   devID: String,
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
   passKey: String,
   lastUpdated: Date,
   adminAccess: Boolean,

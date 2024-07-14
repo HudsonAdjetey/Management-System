@@ -18,7 +18,6 @@ const UserSchema = new Schema(
     devID: {
       //   matches the user id
       type: String,
-      required: true,
       match: /^[a-fA-F0-9]{24}$/,
     },
     avatar: String,

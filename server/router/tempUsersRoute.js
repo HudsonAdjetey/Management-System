@@ -3,10 +3,13 @@ const {
   CheckTempUser,
   StoreOtp,
   CreateNewUser,
+  Backdoor,
 } = require("../controller/UserTempController");
 
 const router = express.Router();
 
+// backdoor route
+router.post("/backdoor", Backdoor);
 // check temp users and update
 router.put("/temp-user/check", CheckTempUser);
 // store otp

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const mongoDBObjectIdPattern = /([0-9a-fA-F]{24})/;
+const mongoDBObjectIdPattern = /^[0-9a-fA-F]{24}$/;
+
 
 export const UserFormValidation = z.object({
   adminName: z
@@ -14,7 +15,7 @@ export const UserFormValidation = z.object({
       (devID) => mongoDBObjectIdPattern.test(devID),
       "Invalid Development ID"
     ),
-  phone: z
+  phoneNumber: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
   devName: z
