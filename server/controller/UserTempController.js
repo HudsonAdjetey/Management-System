@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const TempUsers = require("../model/tempUsers.model");
 const Users = require("../model/Users.model");
 const fs = require("fs");
+const AvatarContainer = require("../config/AvatarConfig");
 
 const CheckTempUser = asyncHandler(async (req, res, next) => {
   const { devID, phoneNumber, devName } = req.body;
@@ -68,18 +69,7 @@ const StoreOtp = asyncHandler(async (req, res, next) => {
 
 // MODIFIY AND DELETE TEMPUSERS TO CREATE A NEW USER
 const CreateNewUser = asyncHandler(async (req, res, next) => {
-  const presetAvatars = [
-    "https://img.freepik.com/free-psd/3d-illustration-with-online-avatar_23-2151303093.jpg?w=740&t=st=1720903630~exp=1720904230~hmac=894065e8b915e134800de07413f40961c49e7de4a39f3e3402a39b637a9d1ae1",
-    "https://example.com/avatar2.jpg",
-    "https://example.com/avatar3.jpg",
-    "https://example.com/avatar4.jpg",
-    "https://example.com/avatar5.jpg",
-    "https://example.com/avatar6.jpg",
-    "https://example.com/avatar7.jpg",
-    "https://example.com/avatar8.jpg",
-    "https://example.com/avatar9.jpg",
-    "https://example.com/avatar10.jpg",
-  ];
+  const presetAvatars = AvatarContainer || [] ;
   const { devID, username, email, phoneNumber, password, otp } = req.body;
   try {
     const defaultAvatar =
