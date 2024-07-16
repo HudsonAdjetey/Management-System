@@ -12,12 +12,16 @@ import { api } from "@/lib/dataFetch";
 import { decryptKey, encryptKey } from "@/lib/utils";
 import { ToastWithTitle } from "./ToastSimple";
 import { toast } from "sonner";
+import OtpAccessDialog from "./OtpAccessDialog";
 
 const PassKeyModal = ({ open, setOpen }) => {
   const [error, setError] = useState("");
   const [passKey, setPassKey] = useState("");
   const [validatedKey, setValidateKey] = useState("");
   const [otpRedirect, setOtpRedirect] = useState(false);
+  const [resendCountDown, setResendCountDown] = useState(0);
+  const [otp, setOtp] = useState("");
+
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(UserFormValidation),
@@ -40,7 +44,20 @@ const PassKeyModal = ({ open, setOpen }) => {
     }
   }, [open]);
 
-  const queryClient = useQueryClient();
+  // OTP CALLS
+  useEffect(() => {
+    let timer;
+    if (resendCountDown > 0) {
+      timer = setTimeout(() => {
+        setResendCountDown((prevCount) => prevCount - 1);
+      }, 1000);
+    }
+    // perform a cleanup
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [resendCountDown]);
+
   const dataCheckTempUserMutation = useMutation({
     mutationKey: ["checkTempUser"],
     mutationFn: async (data) => {
@@ -92,7 +109,7 @@ const PassKeyModal = ({ open, setOpen }) => {
           <LoadingIndicator />
         </div>
       ) : otpRedirect ? (
-        <h2>Redirecting...</h2>
+        <OtpAccessDialog />
       ) : (
         <AdminAccessDialog
           form={form}
