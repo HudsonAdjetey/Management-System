@@ -9,16 +9,15 @@ import AdminAccessDialog from "./AdminAccessDialog";
 import LoadingIndicator from "./LoadingIndicator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/dataFetch";
-import axios from "axios";
+import { decryptKey, encryptKey } from "@/lib/utils";
+import { ToastWithTitle } from "./ToastSimple";
+import { toast } from "sonner";
 
 const PassKeyModal = ({ open, setOpen }) => {
-  const [error, setError] = useState();
-  const [otp, setOtp] = useState("");
-  const [resendCountDown, setResendCountDown] = useState(0);
-  const [confirmationResult, setConfirmationResult] = useState(null);
-  const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [textFormat, setTextFormat] = useState("");
+  const [error, setError] = useState("");
+  const [passKey, setPassKey] = useState("");
+  const [validatedKey, setValidateKey] = useState("");
+  const [otpRedirect, setOtpRedirect] = useState(false);
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(UserFormValidation),
@@ -28,11 +27,9 @@ const PassKeyModal = ({ open, setOpen }) => {
       phoneNumber: "",
     },
   });
-  const apiKey = process.env.API_KEY;
 
   const closeModal = () => {
     setOpen(false);
-    setIsLoading(false);
     setError("");
     router.replace("/");
   };
@@ -41,9 +38,8 @@ const PassKeyModal = ({ open, setOpen }) => {
     if (!open) {
       closeModal();
     }
-  }, [open, isLoading]);
+  }, [open]);
 
-  // using useMutation of tanstack query
   const queryClient = useQueryClient();
   const dataCheckTempUserMutation = useMutation({
     mutationKey: ["checkTempUser"],
@@ -51,14 +47,12 @@ const PassKeyModal = ({ open, setOpen }) => {
       const apiReq = await api.put("user/temp-user/check", data);
       return apiReq;
     },
-    // enable when values are present
   });
-  const onSubmit = async (e) => {
-    const values = form.getValues();
 
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("hello");
-    // Handle form submission
+    const values = form.getValues();
+    setError("");
     try {
       const requestCheck = await dataCheckTempUserMutation.mutateAsync({
         phoneNumber: values.phoneNumber,
@@ -66,16 +60,40 @@ const PassKeyModal = ({ open, setOpen }) => {
         devName: values.devName,
       });
       console.log(requestCheck);
+      setPassKey(values.devID);
+      const encryptedKey = encryptKey(values.devID);
+      setValidateKey(values.devID);
+      window.localStorage.setItem("access_key", encryptedKey);
     } catch (err) {
-      console.log(err);
-    } finally {
-      console.log(values);
+      setError("Failed to check user. Please try again.");
     }
   };
 
+  const access_key =
+    typeof window !== "undefined"
+      ? window.localStorage.getItem("access_key")
+      : null;
+
+  const decryptedKey = access_key ? decryptKey(access_key) : null;
+
+  useEffect(() => {
+    if (decryptedKey && decryptedKey === validatedKey) {
+      // router.replace("/dashboard");
+      setOtpRedirect(true);
+    } else {
+      setError("Access denied. Please enter the correct access key");
+    }
+  }, [decryptedKey, validatedKey]);
+
   return (
     <div>
-      {!isLoading ? (
+      {dataCheckTempUserMutation.isPending ? (
+        <div className="isLoading">
+          <LoadingIndicator />
+        </div>
+      ) : otpRedirect ? (
+        <h2>Redirecting...</h2>
+      ) : (
         <AdminAccessDialog
           form={form}
           setOpen={setOpen}
@@ -83,11 +101,6 @@ const PassKeyModal = ({ open, setOpen }) => {
           closeModal={closeModal}
           onSubmit={onSubmit}
         />
-      ) : (
-        <div className="isLoading">
-          <h3>Info Here</h3>
-          <LoadingIndicator />
-        </div>
       )}
     </div>
   );
