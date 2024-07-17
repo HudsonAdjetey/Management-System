@@ -1,0 +1,26 @@
+{
+  "finances": {
+    "enabled": true
+  },
+  "classes": {
+    "enabled": true
+  },
+  "students": {
+    "enabled": true
+  },
+  "payroll": {
+    "enabled": true
+  },
+  "attendance": {
+    "enabled": true
+  },
+  "courses": {
+    "enabled": true
+  },
+  "teachers": {
+    "enabled": true
+  },
+  "paymentGateway": {
+    "enabled": true
+  }
+}

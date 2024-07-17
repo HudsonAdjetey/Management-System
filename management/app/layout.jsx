@@ -23,10 +23,7 @@ export const metadata = {
     "A simple, efficient, and user-friendly management system for school.",
 };
 
-
-
 export default function RootLayout({ children }) {
- 
   return (
     <html lang="en" suppressHydrationWarning>
       <body

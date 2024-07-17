@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.51.1",
+    "@types/react": "18.3.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
