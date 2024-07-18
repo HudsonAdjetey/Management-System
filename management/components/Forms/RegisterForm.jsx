@@ -4,9 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { managementUserValidation } from "@/lib/Validation";
 import { Form } from "../ui/form";
 import CustomField from "../CustomFormFields";
-import organizations from "@/components/constants/index";
+import organizations from "../constants/data.js";
+import EducationLevels from "../constants/data.js";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
+import { Label } from "../ui/label";
 
 const RegisterForm = () => {
   const form = useForm({
@@ -119,21 +121,33 @@ const RegisterForm = () => {
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
-              name="organizationAddress"
-              label="Organization Address"
-              control={form.control}
-              register={form.register}
-              placeholder="abc"
-              // icon
-            />
-            <CustomField
-              fieldType="phoneInput"
-              name="organizationPhoneNumber"
-              label="Organization Contact"
+              name="managementSize"
+              label="Management Size"
               control={form.control}
               register={form.register}
               // icon
             />
+            {formValues.organizationTypes === "Education" ? (
+              <CustomField
+                fieldType="select"
+                control={form.control}
+                register={form.register}
+                placeholder="Select Organization Type"
+                label="Select Organization Type"
+                name="organizationEducationLevels"
+              >
+                {EducationLevels?.map((edu, i) => {
+                  console.log(edu);
+                  return (
+                    <SelectItem key={edu.id} value={edu.level}>
+                      <p>{edu.level}</p>
+                    </SelectItem>
+                  );
+                })}
+              </CustomField>
+            ) : (
+              "Nothing here"
+            )}
           </div>
           {/* Organization size and organization level */}
         </div>

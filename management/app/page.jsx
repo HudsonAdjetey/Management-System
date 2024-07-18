@@ -46,7 +46,7 @@ const Page = ({ searchParams }) => {
           </span>
         </div>
       </div>
-      <div className="flex section_right_overlay remove-scrollbar max-w-[40%] bg-pink-50">
+      <div className="flex section_right_overlay remove-scrollbar max-w-[40%] ">
         <Image
           src={Images.OverLay}
           alt="Two Students"

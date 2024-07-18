@@ -43,6 +43,15 @@ const Page = ({ params }) => {
           </span>
         </div>
       </div>
+      <div className="section_right_overlay remove-scrollbar max-w-[20%]">
+        <Image
+          src={Images.Illustration}
+          alt="Two Students"
+          height={"100%"}
+          width={"100%"}
+          className="side-img object-contain"
+        />
+      </div>
     </section>
   );
 };

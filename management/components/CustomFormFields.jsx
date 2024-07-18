@@ -11,6 +11,7 @@ import {
 import { Input } from "./ui/input";
 import "react-phone-number-input/style.css";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
 
 const FORM_TYPES = {
   INPUT: "input",
@@ -22,6 +23,8 @@ const FORM_TYPES = {
   DATE: "date",
   PHONE_INPUT: "phoneInput",
   SELECT: "select",
+  CHECKBOX: "checkbox",
+  RADIO: "radio",
 };
 
 const RenderInput = ({ field, props, register }) => {
@@ -75,12 +78,29 @@ const RenderInput = ({ field, props, register }) => {
                 <SelectValue placeholder={props.placeholder} />
               </SelectTrigger>
             </FormControl>
-              <SelectContent className="shad-select-content">
-                {props.children}
-              </SelectContent>
+            <SelectContent className="shad-select-content">
+              {props.children}
+            </SelectContent>
           </Select>
         </FormControl>
       );
+    case FORM_TYPES.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center gap-4">
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+            <label htmlFor={props.name} className="checkbox-label">
+              {props.label}
+            </label>
+          </div>
+        </FormControl>
+      );
+
+    default:
   }
 };
 

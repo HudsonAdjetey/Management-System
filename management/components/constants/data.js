@@ -1,6 +1,6 @@
 import { Images } from "./img";
 
-const organizations = [
+export const organizations = [
   {
     id: 1,
     type: "Education",
@@ -9,7 +9,7 @@ const organizations = [
   {
     id: 2,
     type: "Healthcare",
-    image: Images.HealthcareAvatar
+    image: Images.HealthcareAvatar,
   },
   {
     id: 3,
@@ -23,4 +23,21 @@ const organizations = [
   },
 ];
 
-export default organizations;
+export const EducationLevels = [
+  {
+    id: 1,
+    level: "Primary",
+  },
+  {
+    id: 2,
+    level: "Secondary",
+  },
+  {
+    id: 3,
+    level: "High School",
+  },
+  {
+    id: 4,
+    level: "College",
+  },
+];
