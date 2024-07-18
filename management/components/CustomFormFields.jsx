@@ -10,6 +10,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import "react-phone-number-input/style.css";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 
 const FORM_TYPES = {
   INPUT: "input",
@@ -20,6 +21,7 @@ const FORM_TYPES = {
   FILE: "file",
   DATE: "date",
   PHONE_INPUT: "phoneInput",
+  SELECT: "select",
 };
 
 const RenderInput = ({ field, props, register }) => {
@@ -62,6 +64,21 @@ const RenderInput = ({ field, props, register }) => {
             value={field.value}
             onChange={field.onChange}
           />
+        </FormControl>
+      );
+    case FORM_TYPES.SELECT:
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange}>
+            <FormControl>
+              <SelectTrigger className="shad-select-trigger">
+                <SelectValue placeholder={props.placeholder} />
+              </SelectTrigger>
+              <SelectContent className="shad-select-content">
+                {props.children}
+              </SelectContent>
+            </FormControl>
+          </Select>
         </FormControl>
       );
   }
