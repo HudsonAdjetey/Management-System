@@ -35,11 +35,16 @@ const RegisterForm = () => {
           <p className="text-dark-700">
             Please fill out the form below to register as a new management user.
           </p>
-
         </section>
         <CustomField
-        
-        />
+          fieldType="select"
+          control={form.control}
+          register={form.register}
+          placeholder="Select Organization Type"
+          label="Select Organization Type"
+        >
+          
+        </CustomField>
       </form>
     </Form>
   );
