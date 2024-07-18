@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserFormValidation } from "@/lib/Validation";
+import { Form } from "../ui/form";
+import CustomField from "../CustomFormFields";
 const RegisterForm = () => {
   const form = useForm({
     resolver: zodResolver(managementUserValidation),
@@ -14,10 +16,33 @@ const RegisterForm = () => {
       organizationAdminName: "",
       organizationAdminEmail: "",
       organizationAdminPhoneNumber: "",
-      organizationAdminPassword: "",
+      organizationEducationLevels: "",
+
+      /*       organizationExperience: "",
+      organizationSkills: "",
+      organizationProjects: "",
+      organizationTeamSize: "",
+      organizationTeamMembers: "", */
+      userRole: "",
+      managementSize: 0,
     },
   });
-  return <div>RegisterForm</div>;
+  return (
+    <Form {...form}>
+      <form>
+        <section className="my-12 space-y-4">
+          <h1 className="header ">Welcome... </h1>
+          <p className="text-dark-700">
+            Please fill out the form below to register as a new management user.
+          </p>
+
+        </section>
+        <CustomField
+        
+        />
+      </form>
+    </Form>
+  );
 };
 
 export default RegisterForm;
