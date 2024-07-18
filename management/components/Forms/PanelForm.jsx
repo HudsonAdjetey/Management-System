@@ -4,11 +4,10 @@ import { UserFormValidation } from "@/lib/Validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import CustomField from "./CustomFormFields";
-import { Images } from "./constants/img";
-import { Form } from "./ui/form";
-import { Icons } from "./constants/icons";
-import SubmitBtn from "./SubmitBtn";
+import { Form } from "../ui/form";
+import CustomField from "../CustomFormFields";
+import { Icons } from "../constants/icons";
+import SubmitBtn from "../SubmitBtn"
 
 const PanelForm = () => {
   const form = useForm({

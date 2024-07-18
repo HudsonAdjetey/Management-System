@@ -1,6 +1,6 @@
 import { Images } from "./img";
 
-export const OrganizationType = [
+const organizations = [
   {
     id: 1,
     type: "Education",
@@ -9,7 +9,7 @@ export const OrganizationType = [
   {
     id: 2,
     type: "Healthcare",
-    // image: Images.HealthcareAvatar
+    image: Images.HealthcareAvatar
   },
   {
     id: 3,
@@ -22,3 +22,5 @@ export const OrganizationType = [
     image: Images.chartAvatar,
   },
 ];
+
+export default organizations;
