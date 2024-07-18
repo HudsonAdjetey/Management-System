@@ -3,7 +3,7 @@
 import { Images } from "@/components/constants/img";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import PanelForm from "@/components/PanelForm";
+import PanelForm from "@/components/Forms/PanelForm";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useQuery, useIsFetching } from "@tanstack/react-query";
@@ -41,7 +41,7 @@ const Page = ({ searchParams }) => {
           </p>
           <span onClick={handleOnClick}>
             <Link href="/?admin=true" className="text-blue-500">
-              Administrator
+              New User?
             </Link>
           </span>
         </div>

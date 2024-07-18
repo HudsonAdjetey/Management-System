@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const mongoDBObjectIdPattern = /^[0-9a-fA-F]{24}$/;
 
-
 export const UserFormValidation = z.object({
   adminName: z
     .string()
@@ -27,57 +26,83 @@ export const UserFormValidation = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(20, "Password must be at most 20 characters")
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, {
-      message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-    }),
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
+      {
+        message:
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      }
+    ),
 });
 
-export const PatientFormValidation = z.object({
-  name: z
+export const managementUserValidation = z.object({
+  organizationName: z
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z
+  organizationEmail: z.string().email("Invalid email address"),
+  organizationAdminName: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+
+  organizationAdminEmail: z.string().email("Invalid email address"),
+  userRole: z.enum(["Admin", "Manager", "Developer", "User"]),
+
+  organizationPhoneNumber: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
   birthDate: z.coerce.date(),
-  gender: z.enum(["Male", "Female", "Other"]),
-  address: z
+  phoneNumber: z
+    .string()
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+  organizationEducationLevels: z.enum(["Junior", "Senior", "University"]),
+  organizationTypes: z.enum(["Church", "School", "Sales"]),
+  managementSize: z
+    .number()
+    .min(1, "Management size must be at least 1")
+    .max(1000, "Management size must be at most 1000"),
+  // conditional validation if orgationzation types === Eduction, then can be private or public institution
+  organizationPrivatePublic: z.enum(["Private", "Public"]),
+  organizationDescription: z.string().optional(),
+  organizationSize: z.number().optional(),
+  organizationWebsite: z.string().optional(),
+  organizationLogo: z.string().optional(),
+  organizationAddress: z.string().optional(),
+  organizationOccupation: z.string().optional(),
+  organizationEmergencyContactName: z.string().optional(),
+  organizationEmergencyContactNumber: z.string().optional(),
+  // establishment date
+  establishmentDate: z.coerce.date().optional(),
+  // additional fields for educational institutions
+  educationLevel: z.string().optional(),
+  educationYear: z.number().optional(),
+  educationGPA: z.number().optional(),
+  educationMajor: z.string().optional(),
+  educationMinor: z.string().optional(),
+  // additional fields for churches
+  churchName: z.string().optional(),
+  churchType: z.string().optional(),
+  churchLocation: z.string().optional(),
+  churchServedSince: z.number().optional(),
+  churchWebsite: z.string().optional(),
+  churchDescription: z.string().optional(),
+  churchLogo: z.string().optional(),
+  churchAddress: z.string().optional(),
+  churchContactName: z.string().optional(),
+  churchContactNumber: z.string().optional(),
+  // additional fields for schools
+  schoolName: z.string().optional(),
+  schoolType: z.string().optional(),
+  // organization address
+  organizationAddress: z
     .string()
     .min(5, "Address must be at least 5 characters")
     .max(500, "Address must be at most 500 characters"),
-  occupation: z
-    .string()
-    .min(2, "Occupation must be at least 2 characters")
-    .max(500, "Occupation must be at most 500 characters"),
-  emergencyContactName: z
-    .string()
-    .min(2, "Contact name must be at least 2 characters")
-    .max(50, "Contact name must be at most 50 characters"),
-  emergencyContactNumber: z
-    .string()
-    .refine(
-      (emergencyContactNumber) => /^\+\d{10,15}$/.test(emergencyContactNumber),
-      "Invalid phone number"
-    ),
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
-  insuranceProvider: z
-    .string()
-    .min(2, "Insurance name must be at least 2 characters")
-    .max(50, "Insurance name must be at most 50 characters"),
-  insurancePolicyNumber: z
-    .string()
-    .min(2, "Policy number must be at least 2 characters")
-    .max(50, "Policy number must be at most 50 characters"),
-  allergies: z.string().optional(),
-  currentMedication: z.string().optional(),
-  familyMedicalHistory: z.string().optional(),
-  pastMedicalHistory: z.string().optional(),
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
   identificationDocument: z.custom().optional(),
-  treatmentConsent: z
+  agreementConsent: z
     .boolean()
     .default(false)
     .refine((value) => value === true, {
