@@ -99,6 +99,24 @@ const listings = {
       level: "Eastern Orthodox",
     },
   ],
+  hospitalLevels: [
+    {
+      id: 1,
+      level: "CHPS Zones",
+    },
+    {
+      id: 2,
+      level: "Health Centres/Polyclincs",
+    },
+    {
+      id: 3,
+      level: "District Hospitals",
+    },
+    {
+      id: 4,
+      level: "Regional Hospitals",
+    },
+  ],
 };
 
 export default listings;

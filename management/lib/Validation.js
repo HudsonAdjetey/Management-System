@@ -61,6 +61,23 @@ export const managementUserValidation = z.object({
     .number()
     .min(1, "Management size must be at least 1")
     .max(1000, "Management size must be at most 1000"),
+  educationLevel: z.string({
+    description: "Level of education for the organization",
+    message: "select a level",
+  }),
+  churchLevel: z.string({
+    description: "Level of education for the organization",
+    message: "select a level",
+  }),
+  salesAndMarketing: z.string({
+    description: "Level of education for the organization",
+    message: "select a level",
+  }),
+  healthCareLevel: z.string({
+    description: "Level of education for the organization",
+    message: "select a level",
+  }),
+
   // conditional validation if orgationzation types === Eduction, then can be private or public institution
   organizationPrivatePublic: z.enum(["Private", "Public"]),
   organizationDescription: z.string().optional(),
