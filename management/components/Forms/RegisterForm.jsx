@@ -12,6 +12,7 @@ import { Label } from "../ui/label";
 import listings from "../constants/data.js";
 
 const RegisterForm = () => {
+  const [dateSelet, setDateSelect] = useState(new Date());
   const form = useForm({
     resolver: zodResolver(managementUserValidation),
     defaultValues: {
@@ -32,7 +33,7 @@ const RegisterForm = () => {
       managementSize: 0,
       username: "",
       organizationPrivatePublic: "",
-      establishmentDate: "",
+      establishmentDate: new Date(),
       userAddress: "",
       phoneNumber: "",
     },
@@ -271,7 +272,7 @@ const RegisterForm = () => {
 
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
-              fieldType="input"
+              fieldType="datePicker"
               name="establishmentDate"
               label="Establishment Date"
               control={form.control}

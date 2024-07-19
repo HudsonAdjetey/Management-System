@@ -12,6 +12,8 @@ import { Input } from "./ui/input";
 import "react-phone-number-input/style.css";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const FORM_TYPES = {
   INPUT: "input",
@@ -25,6 +27,7 @@ const FORM_TYPES = {
   SELECT: "select",
   CHECKBOX: "checkbox",
   RADIO: "radio",
+  DATE_PICKER: "datePicker",
 };
 
 const RenderInput = ({ field, props, register }) => {
@@ -32,18 +35,15 @@ const RenderInput = ({ field, props, register }) => {
     case FORM_TYPES.INPUT:
       return (
         <div className="flex items-center rounded-md border-dark-500 bg-dark-400">
-          {
-            // if there is an icon
-            props.icon && (
-              <Image
-                src={props.icon}
-                width={20}
-                height={20}
-                alt={props.iconAlt || "icon"}
-                className="ml-2"
-              />
-            )
-          }
+          {props.icon && (
+            <Image
+              src={props.icon}
+              width={20}
+              height={20}
+              alt={props.iconAlt || "icon"}
+              className="ml-2"
+            />
+          )}
           <FormControl>
             <Input
               placeholder={props.placeholder}
@@ -51,7 +51,6 @@ const RenderInput = ({ field, props, register }) => {
               className="shad-input border-0"
               {...register}
               required
-              
             />
           </FormControl>
         </div>
@@ -99,6 +98,28 @@ const RenderInput = ({ field, props, register }) => {
             </label>
           </div>
         </FormControl>
+      );
+    case FORM_TYPES.DATE_PICKER:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          <Image
+            src="/assets/icons/calendar.svg"
+            height={24}
+            width={24}
+            alt="user"
+            className="ml-2"
+          />
+          <FormControl>
+            <ReactDatePicker
+              showTimeSelect={props.showTimeSelect ?? false}
+              selected={field.value}
+              onChange={(date) => field.onChange(date)}
+              timeInputLabel="Time:"
+              dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
+              wrapperClassName="date-picker"
+            />
+          </FormControl>
+        </div>
       );
 
     default:
