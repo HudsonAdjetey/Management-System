@@ -77,5 +77,5 @@ app.use((req, res, next) => {
 const PORT = process.env.PORT_PRIVATE || 4090;
 
 app.listen(PORT, () => {
-  console.log("Running on port ", PORT);
+  console.log("Running on port", PORT);
 });
