@@ -245,9 +245,7 @@ const RegisterForm = () => {
               placeholder="Select user role"
               label="Contact"
               name="phoneNumber"
-              
             />
-            
           </div>
           {/* Admin Name and User Role */}
         </div>
@@ -257,28 +255,38 @@ const RegisterForm = () => {
         <div>
           <h1 className="space-y-4 my-7">Specific Information</h1>
           <CustomField
-            fieldType="input"
-            name="organizationAdminName"
-            label="Organization Admin Name"
+            fieldType="select"
             control={form.control}
             register={form.register}
-            placeholder="John Doe"
-          />
-          <CustomField
-            fieldType="input"
-            name="organizationAdminEmail"
-            label="Organization Admin Email Address"
-            control={form.control}
-            register={form.register}
-            placeholder="john.doe@organization.com"
-          />
-          <CustomField
-            fieldType="phoneInput"
-            name="organizationAdminPhoneNumber"
-            label="Organization Admin Contact"
-            control={form.control}
-            register={form.register}
-          />
+            placeholder="Organization Status type"
+            label="
+            State Of Organization
+            "
+            name="organizationPrivatePublic"
+          >
+            <SelectItem value={"Private"}>Private</SelectItem>
+            <SelectItem value={"Public"}>Public</SelectItem>
+            <SelectItem value={"NGO"}>NGO</SelectItem>
+          </CustomField>
+
+          <div className="flex flex-col xl:flex-row gap-6">
+            <CustomField
+              fieldType="input"
+              name="establishmentDate"
+              label="Establishment Date"
+              control={form.control}
+              register={form.register}
+              placeholder="john.doe@organization.com"
+            />
+            <CustomField
+              fieldType="phoneInput"
+              name="organizationAdminPhoneNumber"
+              label="Organization Admin Contact"
+              control={form.control}
+              register={form.register}
+            />
+          </div>
+
           <CustomField
             fieldType="select"
             control={form.control}

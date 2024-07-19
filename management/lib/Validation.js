@@ -87,7 +87,7 @@ export const managementUserValidation = z.object({
   }),
 
   // conditional validation if orgationzation types === Eduction, then can be private or public institution
-  organizationPrivatePublic: z.enum(["Private", "Public"]),
+  organizationPrivatePublic: z.enum(["Private", "Public" , "NGO"]),
   organizationDescription: z.string().optional(),
   organizationSize: z.number().optional(),
   organizationWebsite: z.string().optional(),
