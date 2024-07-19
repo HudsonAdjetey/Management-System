@@ -24,8 +24,17 @@ const RegisterForm = () => {
       organizationAdminEmail: "",
       organizationAdminPhoneNumber: "",
       organizationEducationLevels: "",
+      educationLevel: "",
+      churchLevel: "",
+      salesAndMarketing: "",
+      healthCareLevel: "",
       userRole: "",
       managementSize: 0,
+      username: "",
+      organizationPrivatePublic: "",
+      establishmentDate: "",
+      userAddress: "",
+      phoneNumber: "",
     },
   });
 
@@ -47,7 +56,9 @@ const RegisterForm = () => {
             Please fill out the form below to register as a new management user.
           </p>
         </section>
+        {/* BASIC INFORMATION */}
         <div>
+          <h1 className="space-y-4 my-7">Basic Information</h1>
           <CustomField
             fieldType="select"
             control={form.control}
@@ -57,7 +68,11 @@ const RegisterForm = () => {
             name="organizationTypes"
           >
             {listings?.organizations?.map((org) => (
-              <SelectItem key={org.id} value={org.type}>
+              <SelectItem
+                disabled={org.type !== "Education"}
+                key={org.id}
+                value={org.type}
+              >
                 <div className="flex cursor-pointer items-center gap-2">
                   <Image
                     src={org.image}
@@ -80,7 +95,7 @@ const RegisterForm = () => {
               label="Organization Name"
               control={form.control}
               register={form.register}
-              placeholder="abc"
+              placeholder="Horizon Media"
             />
             <CustomField
               fieldType="input"
@@ -88,10 +103,11 @@ const RegisterForm = () => {
               label="Organization Email Address"
               control={form.control}
               register={form.register}
-              placeholder="org@organization.com"
+              placeholder="horizon@org.com"
             />
           </div>
           {/* Name of organization and organization email */}
+
           {/* Organization address and contact */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
@@ -100,7 +116,7 @@ const RegisterForm = () => {
               label="Organization Address"
               control={form.control}
               register={form.register}
-              placeholder="abc"
+              placeholder="Accra, Spintex"
             />
             <CustomField
               fieldType="phoneInput"
@@ -111,6 +127,7 @@ const RegisterForm = () => {
             />
           </div>
           {/* Organization address and contact */}
+
           {/* Organization size and organization level */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
@@ -127,7 +144,7 @@ const RegisterForm = () => {
                 register={form.register}
                 placeholder="Select Education Level"
                 label="Select Education Level"
-                name="organizationEducationLevels"
+                name="educationLevel"
               >
                 {listings?.EducationLevels?.map((edu) => (
                   <SelectItem key={edu.id} value={edu.level}>
@@ -135,19 +152,49 @@ const RegisterForm = () => {
                   </SelectItem>
                 ))}
               </CustomField>
+            ) : organizationType === "Church" ? (
+              <CustomField
+                fieldType="select"
+                control={form.control}
+                register={form.register}
+                placeholder="Select Church Level"
+                label="Select Church Level"
+                name="churchLevel"
+              >
+                {listings?.churchLevels?.map((edu) => (
+                  <SelectItem key={edu.id} value={edu.level}>
+                    <p>{edu.level}</p>
+                  </SelectItem>
+                ))}
+              </CustomField>
+            ) : organizationType === "Healthcare" ? (
+              <CustomField
+                fieldType="select"
+                control={form.control}
+                register={form.register}
+                placeholder="Select Health Care Level"
+                label="Select Health Care Level"
+                name="healthCareLevel"
+              >
+                {listings?.hospitalLevels?.map((health) => (
+                  <SelectItem key={health.id} value={health.level}>
+                    <p>{health.level}</p>
+                  </SelectItem>
+                ))}
+              </CustomField>
             ) : (
-              organizationType === "Church" && (
+              organizationType === "Sales and Marketing" && (
                 <CustomField
                   fieldType="select"
                   control={form.control}
                   register={form.register}
-                  placeholder="Select Church Level"
-                  label="Select Church Level"
-                  name="organizationEducationLevels"
+                  placeholder="Select Health Care Level"
+                  label="Select Health Care Level"
+                  name="salesAndMarketing"
                 >
-                  {listings?.churchLevels?.map((edu) => (
-                    <SelectItem key={edu.id} value={edu.level}>
-                      <p>{edu.level}</p>
+                  {listings?.hospitalLevels?.map((health) => (
+                    <SelectItem key={health.id} value={health.level}>
+                      <p>{health.level}</p>
                     </SelectItem>
                   ))}
                 </CustomField>
@@ -155,7 +202,93 @@ const RegisterForm = () => {
             )}
           </div>
           {/* Organization size and organization level */}
+
+          {/* Admin Name and User Role */}
+          <div className="flex flex-col xl:flex-row gap-6">
+            <CustomField
+              fieldType="input"
+              name="username"
+              label="Username"
+              control={form.control}
+              register={form.register}
+              placeholder="Hannah Baah"
+            />
+            <CustomField
+              fieldType="select"
+              control={form.control}
+              register={form.register}
+              placeholder="Select user role"
+              label="User Role"
+              name="userRole"
+            >
+              <SelectItem value={"Admin"}>Admin</SelectItem>
+              <SelectItem value={"Manager"}>Manager</SelectItem>
+              <SelectItem value={"Developer"}>Developer</SelectItem>
+            </CustomField>
+          </div>
+          {/* Admin Name and User Role */}
+
+          {/* user Address and User phone */}
+          <div className="flex flex-col xl:flex-row gap-6">
+            <CustomField
+              fieldType="input"
+              name="userAddress"
+              label="Address"
+              control={form.control}
+              register={form.register}
+              placeholder="Main street, King Town"
+            />
+            <CustomField
+              fieldType="phoneInput"
+              control={form.control}
+              register={form.register}
+              placeholder="Select user role"
+              label="Contact"
+              name="phoneNumber"
+              
+            />
+            
+          </div>
+          {/* Admin Name and User Role */}
         </div>
+        {/* BASIC INFORMATION */}
+
+        {/* SPECIFIC INFORMATION */}
+        <div>
+          <h1 className="space-y-4 my-7">Specific Information</h1>
+          <CustomField
+            fieldType="input"
+            name="organizationAdminName"
+            label="Organization Admin Name"
+            control={form.control}
+            register={form.register}
+            placeholder="John Doe"
+          />
+          <CustomField
+            fieldType="input"
+            name="organizationAdminEmail"
+            label="Organization Admin Email Address"
+            control={form.control}
+            register={form.register}
+            placeholder="john.doe@organization.com"
+          />
+          <CustomField
+            fieldType="phoneInput"
+            name="organizationAdminPhoneNumber"
+            label="Organization Admin Contact"
+            control={form.control}
+            register={form.register}
+          />
+          <CustomField
+            fieldType="select"
+            control={form.control}
+            register={form.register}
+            placeholder="Select User Role"
+            label="Select User Role"
+            name="userRole"
+          />
+        </div>
+        {/* SPECIFIC INFORMATION */}
       </form>
     </Form>
   );

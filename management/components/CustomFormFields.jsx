@@ -51,6 +51,7 @@ const RenderInput = ({ field, props, register }) => {
               className="shad-input border-0"
               {...register}
               required
+              
             />
           </FormControl>
         </div>

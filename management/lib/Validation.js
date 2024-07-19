@@ -7,6 +7,14 @@ export const UserFormValidation = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
+  username: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!*?&])[A - Za - z\d@$! %*?&]{ 2, }$ /
+    ),
+
   email: z.string().email("Invalid email address"),
   devID: z
     .string()
@@ -46,7 +54,7 @@ export const managementUserValidation = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
 
-  organizationAdminEmail: z.string().email("Invalid email address"),
+  organizationUserEmail: z.string().email("Invalid email address"),
   userRole: z.enum(["Admin", "Manager", "Developer", "User"]),
 
   organizationPhoneNumber: z
@@ -112,6 +120,10 @@ export const managementUserValidation = z.object({
   schoolType: z.string().optional(),
   // organization address
   organizationAddress: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be at most 500 characters"),
+  userAddress: z
     .string()
     .min(5, "Address must be at least 5 characters")
     .max(500, "Address must be at most 500 characters"),
