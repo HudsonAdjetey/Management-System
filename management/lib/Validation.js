@@ -133,7 +133,12 @@ export const managementUserValidation = z.object({
     .max(500, "Address must be at most 500 characters"),
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
-  identificationDocument: z.custom().optional(),
+  organizationLogo: z
+    .string()
+    .refine((value) => value.match(/\.(jpg|jpeg|png|gif)$/), {
+      message: "Invalid file type. Only.jpg,.jpeg,.png,.gif are allowed",
+    }),
+
   agreementConsent: z
     .boolean()
     .default(false)

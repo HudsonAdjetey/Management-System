@@ -1,31 +1,45 @@
+"use client";
 import { convertFileToUrl } from "@/lib/utils";
 import Image from "next/image";
 import React, { useCallback } from "react";
-import { useDropZone } from "react-dropzone";
-
+import { useDropzone } from "react-dropzone";
 const UploadFile = ({ files, onChange }) => {
   const onDrop = useCallback((accpetedFiles) => {
     if (accpetedFiles.length > 0) {
-      onChange(accpetedFiles);
+      // onChange(accpetedFiles);
+      const validFiles = accpetedFiles.filter((file, _) => {
+        return ["image/jpeg", "image/png", "image/gif"].includes(file.type);
+      });
+      if (validFiles?.length > 0) {
+        onChange(validFiles);
+      } else {
+        alert("Only image files (jpg, png, gif) are allowed.");
+      }
     }
   }, []);
-  const { getRootProps, getInputProps } = useDropZone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: "image/jpeg, image/png, image/jpg",
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png"],
+    },
     maxFiles: 1,
     multiple: false,
-    maxSize: 2000000, // 2MB
+    maxSize: 2000000,
   });
   return (
     <div {...getRootProps()} className="file-upload">
-      <input {...getInputProps()} />
+      <input
+        // accept image files only
+
+        {...getInputProps()}
+      />
       {files && files?.length > 0 ? (
         <Image
           src={convertFileToUrl(files[0])}
           width={1000}
-          height={1000}
+          height={200}
           alt="uploaded image"
-          className="max-h-[400px] overflow-hidden object-cover"
+          className="max-h-[400px]  overflow-hidden object-cover"
         />
       ) : (
         <>
@@ -37,7 +51,7 @@ const UploadFile = ({ files, onChange }) => {
           />
           <div className="file-upload_label">
             <p className="text-14-regular ">
-              <span className="text-green-500">Click to upload </span>
+              <span className="text-blue-500">Click to upload </span>
               or drag and drop
             </p>
             <p className="text-12-regular">

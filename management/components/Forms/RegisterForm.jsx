@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { managementUserValidation } from "@/lib/Validation";
-import { Form } from "../ui/form";
+import { Form, FormControl } from "../ui/form";
 import CustomField from "../CustomFormFields";
 import organizations from "../constants/data.js";
 import EducationLevels from "../constants/data.js";
@@ -10,7 +10,7 @@ import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import { Label } from "../ui/label";
 import listings from "../constants/data.js";
-
+import UploadFile from "@/components/RegisterForm/UploadFIle";
 const RegisterForm = () => {
   const [dateSelet, setDateSelect] = useState(new Date());
   const form = useForm({
@@ -38,6 +38,7 @@ const RegisterForm = () => {
       phoneNumber: "",
       organizationSize: "",
       organizationDescription: "",
+      organizationLogo: "",
     },
   });
 
@@ -306,6 +307,19 @@ const RegisterForm = () => {
           />
         </div>
         {/* SPECIFIC INFORMATION */}
+        <CustomField
+          fieldType="skeleton"
+          name="organizationLogo"
+          label="Organization Logo"
+          control={form.control}
+          renderSkeleton={(field) => {
+            return (
+              <FormControl>
+                <UploadFile files={field.value} onChange={field.onChange} />
+              </FormControl>
+            );
+          }}
+        />
       </form>
     </Form>
   );

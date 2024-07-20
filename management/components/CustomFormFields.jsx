@@ -29,6 +29,7 @@ const FORM_TYPES = {
   CHECKBOX: "checkbox",
   RADIO: "radio",
   DATE_PICKER: "datePicker",
+  SKELETON: "skeleton"
 };
 
 const RenderInput = ({ field, props, register }) => {
@@ -135,6 +136,8 @@ const RenderInput = ({ field, props, register }) => {
           />
         </FormControl>
       );
+    case FORM_TYPES.SKELETON:
+      return props.renderSkeleton ? props.renderSkeleton(field): null
     default:
   }
 };
