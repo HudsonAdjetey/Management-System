@@ -11,3 +11,5 @@ export function encryptKey(passkey) {
 export function decryptKey(passkey) {
   return decodeURIComponent(atob(passkey));
 }
+
+export const convertFileToUrl = (file) => URL.createObjectURL(file);
