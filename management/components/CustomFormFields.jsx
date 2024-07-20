@@ -29,7 +29,7 @@ const FORM_TYPES = {
   CHECKBOX: "checkbox",
   RADIO: "radio",
   DATE_PICKER: "datePicker",
-  SKELETON: "skeleton"
+  SKELETON: "skeleton",
 };
 
 const RenderInput = ({ field, props, register }) => {
@@ -137,8 +137,21 @@ const RenderInput = ({ field, props, register }) => {
         </FormControl>
       );
     case FORM_TYPES.SKELETON:
-      return props.renderSkeleton ? props.renderSkeleton(field): null
+      return props.renderSkeleton ? props.renderSkeleton(field) : null;
+
+    case FORM_TYPES.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center gap-4"></div>
+          <Checkbox
+            id={props.name}
+            checked={field.value}
+            onChange={field.onChange}
+          />
+        </FormControl>
+      );
     default:
+      throw new Error(`Invalid form field type: ${props.fieldType}`);
   }
 };
 

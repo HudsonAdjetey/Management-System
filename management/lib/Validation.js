@@ -10,11 +10,11 @@ export const UserFormValidation = z.object({
   username: z
     .string()
     .min(2, "Name must be at least 2 characters")
-    .max(50, "Name must be at most 50 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!*?&])[A - Za - z\d@$! %*?&]{ 2, }$ /
-    ),
-
+    .max(50, "Name must be at most 50 characters"),
+  /*  .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!*?&])[A-Za-z\d@$!%*?&]{2,}$/,
+      "Username must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ), */
   email: z.string().email("Invalid email address"),
   devID: z
     .string()
@@ -29,18 +29,17 @@ export const UserFormValidation = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
-  // password with special character
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(20, "Password must be at most 20 characters")
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
-      {
-        message:
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-      }
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
+  confirmPassword: z.string().refine((value, context) => {
+    return value === context.parent.password;
+  }, "Passwords must match"),
 });
 
 export const managementUserValidation = z.object({
@@ -49,14 +48,17 @@ export const managementUserValidation = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
   organizationEmail: z.string().email("Invalid email address"),
-  organizationAdminName: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name must be at most 50 characters"),
 
   organizationUserEmail: z.string().email("Invalid email address"),
   userRole: z.enum(["Admin", "Manager", "Developer", "User"]),
-
+  username: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!*?&])[A-Za-z\d@$!%*?&]{2,}$/,
+      "Username must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
   organizationPhoneNumber: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
@@ -64,11 +66,8 @@ export const managementUserValidation = z.object({
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
   organizationEducationLevels: z.enum(["Junior", "Senior", "University"]),
-  organizationTypes: z.enum(["Church", "School", "Sales"]),
-  managementSize: z
-    .number()
-    .min(3, "Management size must be at least 3")
-    .max(1000, "Management size must be at most 1000"),
+  organizationTypes: z.enum(["Church", "School", "Sales", "Education"]),
+  managementSize: z.string(),
   educationLevel: z.string({
     description: "Level of education for the organization",
     message: "select a level",
@@ -86,43 +85,13 @@ export const managementUserValidation = z.object({
     message: "select a level",
   }),
 
-  // conditional validation if orgationzation types === Eduction, then can be private or public institution
   organizationPrivatePublic: z.enum(["Private", "Public", "NGO"]),
   organizationDescription: z
     .string()
     .max(50, "Description should be less than 50 characters"),
   organizationSize: z.enum(["5 - 20", "50 - 100", "200 - 500", "1000 - 2000"]),
   organizationWebsite: z.string().optional(),
-  organizationLogo: z.string().optional(),
-  organizationAddress: z.string().optional(),
-  organizationOccupation: z.string().optional(),
-  organizationEmergencyContactName: z.string().optional(),
-  organizationEmergencyContactNumber: z.string().optional(),
-  // establishment date
-  establishmentDate: z.coerce.date({
-    message: "Date required",
-  }),
-  // additional fields for educational institutions
-  educationLevel: z.string().optional(),
-  educationYear: z.number().optional(),
-  educationGPA: z.number().optional(),
-  educationMajor: z.string().optional(),
-  educationMinor: z.string().optional(),
-  // additional fields for churches
-  churchName: z.string().optional(),
-  churchType: z.string().optional(),
-  churchLocation: z.string().optional(),
-  churchServedSince: z.number().optional(),
-  churchWebsite: z.string().optional(),
-  churchDescription: z.string().optional(),
-  churchLogo: z.string().optional(),
-  churchAddress: z.string().optional(),
-  churchContactName: z.string().optional(),
-  churchContactNumber: z.string().optional(),
-  // additional fields for schools
-  schoolName: z.string().optional(),
-  schoolType: z.string().optional(),
-  // organization address
+
   organizationAddress: z
     .string()
     .min(5, "Address must be at least 5 characters")
@@ -131,14 +100,17 @@ export const managementUserValidation = z.object({
     .string()
     .min(5, "Address must be at least 5 characters")
     .max(500, "Address must be at most 500 characters"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(20, "Password must be at most 20 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
-  organizationLogo: z
-    .string()
-    .refine((value) => value.match(/\.(jpg|jpeg|png|gif)$/), {
-      message: "Invalid file type. Only.jpg,.jpeg,.png,.gif are allowed",
-    }),
-
   agreementConsent: z
     .boolean()
     .default(false)
@@ -157,45 +129,29 @@ export const managementUserValidation = z.object({
     .refine((value) => value === true, {
       message: "You must consent to privacy in order to proceed",
     }),
-});
+  establishmentDate: z.coerce.date({
+    message: "Date required",
+  }),
 
-export const CreateAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
-  schedule: z.coerce.date(),
-  reason: z
-    .string()
-    .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
-  note: z.string().optional(),
-  cancellationReason: z.string().optional(),
-});
+  // Additional fields for educational institutions
+  educationYear: z.number().optional(),
+  educationGPA: z.number().optional(),
+  educationMajor: z.string().optional(),
+  educationMinor: z.string().optional(),
 
-export const ScheduleAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
-  schedule: z.coerce.date(),
-  reason: z.string().optional(),
-  note: z.string().optional(),
-  cancellationReason: z.string().optional(),
-});
+  // Additional fields for churches
+  churchName: z.string().optional(),
+  churchType: z.string().optional(),
+  churchLocation: z.string().optional(),
+  churchServedSince: z.number().optional(),
+  churchWebsite: z.string().optional(),
+  churchDescription: z.string().optional(),
+  churchLogo: z.string().optional(),
+  churchAddress: z.string().optional(),
+  churchContactName: z.string().optional(),
+  churchContactNumber: z.string().optional(),
 
-export const CancelAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
-  schedule: z.coerce.date(),
-  reason: z.string().optional(),
-  note: z.string().optional(),
-  cancellationReason: z
-    .string()
-    .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
+  // Additional fields for schools
+  schoolName: z.string().optional(),
+  schoolType: z.string().optional(),
 });
-
-export function getAppointmentSchema(type) {
-  switch (type) {
-    case "create":
-      return CreateAppointmentSchema;
-    case "cancel":
-      return CancelAppointmentSchema;
-    default:
-      return ScheduleAppointmentSchema;
-  }
-}

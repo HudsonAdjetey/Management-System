@@ -1,44 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { managementUserValidation } from "@/lib/Validation";
 import { Form, FormControl } from "../ui/form";
 import CustomField from "../CustomFormFields";
-import organizations from "../constants/data.js";
-import EducationLevels from "../constants/data.js";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
-import { Label } from "../ui/label";
 import listings from "../constants/data.js";
 import UploadFile from "@/components/RegisterForm/UploadFIle";
+import SubmitBtn from "../SubmitBtn";
+import { registerFormKeys } from "@/components/constants/index";
+
 const RegisterForm = () => {
   const [dateSelet, setDateSelect] = useState(new Date());
   const form = useForm({
     resolver: zodResolver(managementUserValidation),
     defaultValues: {
-      organizationTypes: "",
-      organizationName: "",
-      organizationEmail: "",
-      organizationPhoneNumber: "",
-      organizationAddress: "",
-      organizationAdminName: "",
-      organizationAdminEmail: "",
-      organizationAdminPhoneNumber: "",
-      organizationEducationLevels: "",
-      educationLevel: "",
-      churchLevel: "",
-      salesAndMarketing: "",
-      healthCareLevel: "",
-      userRole: "",
-      managementSize: "",
-      username: "",
-      organizationPrivatePublic: "",
-      establishmentDate: new Date(),
-      userAddress: "",
-      phoneNumber: "",
-      organizationSize: "",
-      organizationDescription: "",
-      organizationLogo: "",
+      ...registerFormKeys,
     },
   });
 
@@ -53,7 +31,7 @@ const RegisterForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <section className="my-12 space-y-4">
           <h1 className="header">Welcome... </h1>
           <p className="text-dark-700">
@@ -253,6 +231,28 @@ const RegisterForm = () => {
             />
           </div>
           {/* Admin Name and User Role */}
+
+          {/* user Address and User phone */}
+          <div className="flex flex-col xl:flex-row gap-6">
+            <CustomField
+              fieldType="input"
+              name="password"
+              label="Password"
+              control={form.control}
+              register={form.register}
+              placeholder="Enter Password"
+              type="password"
+            />
+            <CustomField
+              fieldType="input"
+              name="confirmPassword"
+              label="Confirm password"
+              control={form.control}
+              register={form.register}
+              placeholder="Confirm Password"
+              type="password"
+            />
+          </div>
         </div>
         {/* BASIC INFORMATION */}
 
@@ -302,7 +302,7 @@ const RegisterForm = () => {
             control={form.control}
             register={form.register}
             label="Describe your organization/institution"
-            name="userRole"
+            name="organizationDescription"
             type="number"
           />
         </div>
@@ -320,6 +320,7 @@ const RegisterForm = () => {
             );
           }}
         />
+        <SubmitBtn>Submit</SubmitBtn>
       </form>
     </Form>
   );
