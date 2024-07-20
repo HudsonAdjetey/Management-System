@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Textarea } from "./ui/textarea";
 
 const FORM_TYPES = {
   INPUT: "input",
@@ -51,6 +52,8 @@ const RenderInput = ({ field, props, register }) => {
               className="shad-input border-0"
               {...register}
               required
+              type={props.type}
+              min={3}
             />
           </FormControl>
         </div>
@@ -121,7 +124,17 @@ const RenderInput = ({ field, props, register }) => {
           </FormControl>
         </div>
       );
-
+    case FORM_TYPES.TEXTAREA:
+      return (
+        <FormControl>
+          <Textarea
+            placeholder={props.placeholder}
+            {...field}
+            className="shad-textArea xl:h-[200px]  h-[150px] "
+            disabled={props.disabled}
+          />
+        </FormControl>
+      );
     default:
   }
 };

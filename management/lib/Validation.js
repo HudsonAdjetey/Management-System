@@ -67,7 +67,7 @@ export const managementUserValidation = z.object({
   organizationTypes: z.enum(["Church", "School", "Sales"]),
   managementSize: z
     .number()
-    .min(1, "Management size must be at least 1")
+    .min(3, "Management size must be at least 3")
     .max(1000, "Management size must be at most 1000"),
   educationLevel: z.string({
     description: "Level of education for the organization",
@@ -87,9 +87,11 @@ export const managementUserValidation = z.object({
   }),
 
   // conditional validation if orgationzation types === Eduction, then can be private or public institution
-  organizationPrivatePublic: z.enum(["Private", "Public" , "NGO"]),
-  organizationDescription: z.string().optional(),
-  organizationSize: z.number().optional(),
+  organizationPrivatePublic: z.enum(["Private", "Public", "NGO"]),
+  organizationDescription: z
+    .string()
+    .max(50, "Description should be less than 50 characters"),
+  organizationSize: z.enum(["5 - 20", "50 - 100", "200 - 500", "1000 - 2000"]),
   organizationWebsite: z.string().optional(),
   organizationLogo: z.string().optional(),
   organizationAddress: z.string().optional(),
@@ -97,7 +99,9 @@ export const managementUserValidation = z.object({
   organizationEmergencyContactName: z.string().optional(),
   organizationEmergencyContactNumber: z.string().optional(),
   // establishment date
-  establishmentDate: z.coerce.date().optional(),
+  establishmentDate: z.coerce.date({
+    message: "Date required",
+  }),
   // additional fields for educational institutions
   educationLevel: z.string().optional(),
   educationYear: z.number().optional(),

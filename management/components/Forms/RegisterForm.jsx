@@ -30,12 +30,14 @@ const RegisterForm = () => {
       salesAndMarketing: "",
       healthCareLevel: "",
       userRole: "",
-      managementSize: 0,
+      managementSize: "",
       username: "",
       organizationPrivatePublic: "",
       establishmentDate: new Date(),
       userAddress: "",
       phoneNumber: "",
+      organizationSize: "",
+      organizationDescription: "",
     },
   });
 
@@ -129,7 +131,7 @@ const RegisterForm = () => {
           </div>
           {/* Organization address and contact */}
 
-          {/* Organization size and organization level */}
+          {/* management size and organization level */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
@@ -137,6 +139,7 @@ const RegisterForm = () => {
               label="Management Size"
               control={form.control}
               register={form.register}
+              type="number"
             />
             {organizationType === "Education" ? (
               <CustomField
@@ -280,21 +283,26 @@ const RegisterForm = () => {
               placeholder="john.doe@organization.com"
             />
             <CustomField
-              fieldType="phoneInput"
-              name="organizationAdminPhoneNumber"
-              label="Organization Admin Contact"
+              fieldType="select"
+              name="organizationSize"
+              label="Organization Size"
               control={form.control}
               register={form.register}
-            />
+            >
+              <SelectItem value="5 - 20">5 - 20</SelectItem>
+              <SelectItem value="50 - 100">50 - 100</SelectItem>
+              <SelectItem value="200 - 500">200 - 500</SelectItem>
+              <SelectItem value="1000 - 2000">1000 - 2000</SelectItem>
+            </CustomField>
           </div>
 
           <CustomField
-            fieldType="select"
+            fieldType="textarea"
             control={form.control}
             register={form.register}
-            placeholder="Select User Role"
-            label="Select User Role"
+            label="Describe your organization/institution"
             name="userRole"
+            type="number"
           />
         </div>
         {/* SPECIFIC INFORMATION */}
