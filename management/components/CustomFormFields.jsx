@@ -50,7 +50,7 @@ const RenderInput = ({ field, props, register }) => {
             <Input
               placeholder={props.placeholder}
               {...field}
-              className="shad-input border-0"
+              className="shad-input "
               {...register}
               required
               type={props.type}

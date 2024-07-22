@@ -20,5 +20,4 @@ export const registerFormKeys = {
   organizationDescription: "",
   organizationLogo: "",
   password: "",
-  confirmPassword: "",
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { managementUserValidation } from "@/lib/Validation";
@@ -10,9 +10,15 @@ import listings from "../constants/data.js";
 import UploadFile from "@/components/RegisterForm/UploadFIle";
 import SubmitBtn from "../SubmitBtn";
 import { registerFormKeys } from "@/components/constants/index";
+import {
+  convertFileToUrl,
+  getFileSizeInMb,
+  readFileAsBase64,
+} from "@/lib/utils";
 
 const RegisterForm = () => {
   const [dateSelet, setDateSelect] = useState(new Date());
+  const [image, setImage] = useState("");
   const form = useForm({
     resolver: zodResolver(managementUserValidation),
     defaultValues: {
@@ -41,9 +47,91 @@ const RegisterForm = () => {
     control: form.control,
     name: "organizationSize",
   });
+  // Education Level
+  const educationLevel = useWatch({
+    control: form.control,
+    name: "educationLevel",
+  });
 
-  const onSubmit = () => {
-    console.log("yep");
+  // user role
+  const userRole = useWatch({
+    control: form.control,
+    name: "userRole",
+  });
+  const organizationLogo = useWatch({
+    control: form.control,
+    name: "organizationLogo",
+  });
+
+  // handle image input change
+  const fileUpload = useCallback(() => {
+    const fetchImage = async () => {
+      if (organizationLogo) {
+        const file = organizationLogo[0];
+        // create object url with type as an image
+        const ext = file.name.split(".").pop();
+        const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
+        if (!extensions.includes(ext)) {
+          // if extension is not in the list of extensions
+          throw new Error("No Image");
+        }
+        const sizeInMb = getFileSizeInMb(file);
+        if (sizeInMb > 2) {
+          throw new Error("Image size is too large. Max size is 2MB");
+        }
+        try {
+          const fileContent = await readFileAsBase64(file);
+
+          return fileContent;
+        } catch (error) {
+          console.log(error);
+          setImage("");
+        }
+      }
+    };
+    fetchImage();
+  }, [organizationLogo]);
+
+  const onSubmit = async (e) => {
+    e?.preventDefault();
+    const allFormValues = form.getValues();
+    if (!organizationLogo) {
+      return Error("Nothing here");
+    }
+    const file = organizationLogo[0];
+    // create object url with type as an image
+    const ext = file.name.split(".").pop();
+    const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
+    if (!extensions.includes(ext)) {
+      // if extension is not in the list of extensions
+      throw new Error("No Image");
+    }
+    const sizeInMb = getFileSizeInMb(file);
+    if (sizeInMb > 2) {
+      throw new Error("Image size is too large. Max size is 2MB");
+    }
+    if (
+      organizationSize === "" ||
+      organizationPrivatePublic === "" ||
+      organizationLogo === "" ||
+      organizationLogo[0] === "" ||
+      organizationSize === "" ||
+      organizationLogo[0].size === 0 ||
+      managementSize === "" ||
+      educationLevel === "" ||
+      userRole === ""
+    ) {
+      return Error("Please fill out all required fields");
+    }
+    try {
+      const fileContent = await readFileAsBase64(file);
+      allFormValues.organizationLogo = fileContent;
+      console.log(allFormValues);
+      return fileContent;
+    } catch (error) {
+      console.log(error);
+      setImage("");
+    }
   };
 
   return (
