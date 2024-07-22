@@ -58,39 +58,14 @@ const RegisterForm = () => {
     control: form.control,
     name: "userRole",
   });
+  // organization logo
   const organizationLogo = useWatch({
     control: form.control,
     name: "organizationLogo",
   });
 
-  // handle image input change
-  const fileUpload = useCallback(() => {
-    const fetchImage = async () => {
-      if (organizationLogo) {
-        const file = organizationLogo[0];
-        // create object url with type as an image
-        const ext = file.name.split(".").pop();
-        const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
-        if (!extensions.includes(ext)) {
-          // if extension is not in the list of extensions
-          throw new Error("No Image");
-        }
-        const sizeInMb = getFileSizeInMb(file);
-        if (sizeInMb > 2) {
-          throw new Error("Image size is too large. Max size is 2MB");
-        }
-        try {
-          const fileContent = await readFileAsBase64(file);
 
-          return fileContent;
-        } catch (error) {
-          console.log(error);
-          setImage("");
-        }
-      }
-    };
-    fetchImage();
-  }, [organizationLogo]);
+  // submit form function
 
   const onSubmit = async (e) => {
     e?.preventDefault();
