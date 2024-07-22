@@ -29,7 +29,18 @@ const RegisterForm = () => {
   const managementSize = useWatch({
     control: form.control,
     name: "managementSize",
-  })
+  });
+  // organizatio status type
+  const organizationPrivatePublic = useWatch({
+    control: form.control,
+    name: "organizationPrivatePublic",
+  });
+
+  // organization size
+  const organizationSize = useWatch({
+    control: form.control,
+    name: "organizationSize",
+  });
 
   const onSubmit = () => {
     console.log("yep");
