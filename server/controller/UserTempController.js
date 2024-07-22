@@ -3,6 +3,7 @@ const TempUsers = require("../model/tempUsers.model");
 const Users = require("../model/Users.model");
 const fs = require("fs");
 const AvatarContainer = require("../utils/AvatarConfig");
+const OrganizationModel = require("../model/organization.model");
 
 const CheckTempUser = asyncHandler(async (req, res, next) => {
   const { devID, phoneNumber, devName } = req.body;
@@ -75,13 +76,10 @@ const Backdoor = asyncHandler(async (req, res, next) => {
   // create a user
   try {
     const { devName, phoneNumber } = req.body;
-    const user = await TempUsers.create(
-      {
-        devName,
-        phoneNumber,
-      },
-     
-    );
+    const user = await TempUsers.create({
+      devName,
+      phoneNumber,
+    });
     if (user) {
       return res.status(201).json({
         message: "User created successfully",
@@ -100,7 +98,7 @@ const Backdoor = asyncHandler(async (req, res, next) => {
 // MODIFIY AND DELETE TEMPUSERS TO CREATE A NEW USER
 const CreateNewUser = asyncHandler(async (req, res, next) => {
   const presetAvatars = AvatarContainer || [];
-  const { devID, username, email, phoneNumber, password, otp } = req.body;
+  const { devID, username, email, phoneNumber, password, ...others } = req.body;
   try {
     const defaultAvatar =
       presetAvatars[Math.floor(Math.random() * presetAvatars.length)];
@@ -110,23 +108,22 @@ const CreateNewUser = asyncHandler(async (req, res, next) => {
         message: "User not found",
       });
     }
-    if (checkTempUser.otp !== otp) {
-      return res.status(401).json({
-        message: "Invalid OTP, not authorized",
-      });
-    }
+
     const newUser = await Users.create({
       devID,
       username,
       email,
       phoneNumber,
       password,
-      // avatar
       avatar: req.file ? req.file.path : defaultAvatar,
     });
     await TempUsers.findByIdAndDelete(devID);
     // delete the the upload file path
     if (newUser) {
+      // create organization
+      await OrganizationModel.create({
+        ...req.body,
+      });
       fs.unlinkSync(req.file.path);
     }
     res.status(201).json({
@@ -137,5 +134,21 @@ const CreateNewUser = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+const confirmNextStepCreate = asyncHandler(async (req, res, next) => {
+  try {
+    const {userId}  = req.body
+    // check if the userID matches a user
+    const checkUser = await Users.findById(userId)
+    if (!checkUser) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+  } catch (error) {
+    
+  }
+})
+
 
 module.exports = { CheckTempUser, StoreOtp, CreateNewUser, Backdoor };

@@ -30,6 +30,18 @@ const UserSchema = new Schema(
       match:
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
     },
+    avatar: {
+      type: String,
+    },
+    userRole: {
+      type: String,
+      enum: ["Admin", "Manager", "Developer", "User"],
+      default: "User",
+    },
+    organizationBelongTo: {
+      type: Schema.Types.ObjectId,
+      ref: "Organizations",
+    },
   },
   {
     timestamps: true,

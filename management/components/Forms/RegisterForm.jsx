@@ -20,10 +20,16 @@ const RegisterForm = () => {
     },
   });
 
+  // organization type watch
   const organizationType = useWatch({
     control: form.control,
     name: "organizationTypes",
   });
+  // management size watch
+  const managementSize = useWatch({
+    control: form.control,
+    name: "managementSize",
+  })
 
   const onSubmit = () => {
     console.log("yep");
@@ -112,14 +118,23 @@ const RegisterForm = () => {
 
           {/* management size and organization level */}
           <div className="flex flex-col xl:flex-row gap-6">
+            {/* management size  */}
             <CustomField
-              fieldType="input"
+              fieldType="select"
               name="managementSize"
               label="Management Size"
               control={form.control}
               register={form.register}
               type="number"
-            />
+            >
+              <SelectItem value="5 - 20">5 - 20</SelectItem>
+              <SelectItem value="50 - 100">50 - 100</SelectItem>
+              <SelectItem value="200 - 500">200 - 500</SelectItem>
+              <SelectItem value="1000 - 2000">1000 - 2000</SelectItem>
+            </CustomField>
+            {/* management size  */}
+
+            {/* Organization Levels */}
             {organizationType === "Education" ? (
               <CustomField
                 fieldType="select"
@@ -183,6 +198,7 @@ const RegisterForm = () => {
                 </CustomField>
               )
             )}
+            {/* Organization Levels */}
           </div>
           {/* Organization size and organization level */}
 
@@ -205,8 +221,15 @@ const RegisterForm = () => {
               name="userRole"
             >
               <SelectItem value={"Admin"}>Admin</SelectItem>
-              <SelectItem value={"Manager"}>Manager</SelectItem>
-              <SelectItem value={"Developer"}>Developer</SelectItem>
+              <SelectItem value={"Manager"} disabled>
+                Manager
+              </SelectItem>
+              <SelectItem disabled value={"Developer"}>
+                Developer
+              </SelectItem>
+              <SelectItem disabled value={"User"}>
+                User
+              </SelectItem>
             </CustomField>
           </div>
           {/* Admin Name and User Role */}
@@ -290,10 +313,10 @@ const RegisterForm = () => {
               control={form.control}
               register={form.register}
             >
-              <SelectItem value="5 - 20">5 - 20</SelectItem>
-              <SelectItem value="50 - 100">50 - 100</SelectItem>
-              <SelectItem value="200 - 500">200 - 500</SelectItem>
-              <SelectItem value="1000 - 2000">1000 - 2000</SelectItem>
+              <SelectItem value="Small">Small</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Large">Large</SelectItem>
+              <SelectItem value="Extra Large">Extra Large</SelectItem>
             </CustomField>
           </div>
 

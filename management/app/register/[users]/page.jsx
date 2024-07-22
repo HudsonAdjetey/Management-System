@@ -7,14 +7,9 @@ import Image from "next/image";
 import { Images } from "@/components/constants/img";
 import RegisterForm from "@/components/Forms/RegisterForm";
 const Page = ({ params }) => {
-  console.log(params.users);
   const router = useRouter();
   const userID = router.query;
   const searchParams = useSearchParams();
-  const search = searchParams.get("userID");
-  console.log(search);
-  console.log(searchParams);
-  console.log(userID);
 
   return (
     <section className="flex justify-between h-screen max-h-screen">
