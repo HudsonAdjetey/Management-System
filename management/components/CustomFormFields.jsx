@@ -32,7 +32,7 @@ const FORM_TYPES = {
   SKELETON: "skeleton",
 };
 
-const RenderInput = ({ field, props, register }) => {
+const RenderInput = ({ field, props }) => {
   switch (props.fieldType) {
     case FORM_TYPES.INPUT:
       return (
@@ -50,8 +50,7 @@ const RenderInput = ({ field, props, register }) => {
             <Input
               placeholder={props.placeholder}
               {...field}
-              className="shad-input "
-              {...register}
+              className="shad-input border-none outline-none"
               required
               type={props.type}
               min={3}
@@ -108,9 +107,9 @@ const RenderInput = ({ field, props, register }) => {
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
           <Image
             src="/assets/icons/calendar.svg"
-            height={24}
             width={24}
-            alt="user"
+            height={24}
+            alt="date"
             className="ml-2"
           />
           <FormControl>

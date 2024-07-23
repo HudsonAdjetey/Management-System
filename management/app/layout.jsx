@@ -5,7 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import TanstackProvider from "@/lib/providers/TanstackProvider";
-import axios from "axios";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontRoboto = Robot({
   subsets: ["latin"],
@@ -39,6 +39,7 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <TanstackProvider>{children}</TanstackProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

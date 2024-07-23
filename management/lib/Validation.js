@@ -55,10 +55,8 @@ export const managementUserValidation = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!*?&])[A-Za-z\d@$!%*?&]{2,}$/,
-      "Username must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    ),
+    .regex(/^[a-zA-Z]+$/, "Username must contain only alphabet characters"),
+
   organizationPhoneNumber: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),

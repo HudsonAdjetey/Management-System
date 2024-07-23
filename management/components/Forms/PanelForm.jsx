@@ -1,6 +1,6 @@
 "use client";
 
-import { UserFormValidation } from "@/lib/Validation";
+import { UserValidation } from "@/lib/Validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -11,7 +11,7 @@ import SubmitBtn from "../SubmitBtn"
 
 const PanelForm = () => {
   const form = useForm({
-    resolver: zodResolver(UserFormValidation),
+    resolver: zodResolver(UserValidation),
     defaultValues: {
       adminName: "",
       email: "",

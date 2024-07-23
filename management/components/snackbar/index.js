@@ -1,47 +1,23 @@
-"use server";
-import { Bounce, toast } from "react-toastify";
+import { ToastAction } from "../ui/toast";
 
-export const toastError = (error) => {
-  toast.error(error, {
-    position: "bottom-left",
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    transition: Bounce,
-    theme: "dark",
-    toastId: "error-toast",
-    closeButton: false,
-    className: "toast-error",
-    bodyClassName: "toast-body",
-  });
-};
-
-export const toastSuccess = (success) => {
-  toast.success(success, {
-    position: "bottom-center",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Bounce,
-  });
-};
-export const toastWarn = (warn) => {
-  toast.warn(warn, {
-    position: "bottom-center",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Bounce,
-  });
+export const snackFn = (title, description, state, variant) => {
+  return {
+    title,
+    description,
+    duration: 3000,
+    variant,
+    action:
+      state === "networkError" && variant !== "success" ? (
+        <ToastAction
+          label="Retry"
+          altText="Retry"
+          onClick={() => {
+            // Retry logic here
+            window.location.reload();
+          }}
+        >
+          Try Again
+        </ToastAction>
+      ) : null,
+  };
 };

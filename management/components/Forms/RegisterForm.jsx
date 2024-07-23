@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { managementUserValidation } from "@/lib/Validation";
+import { managementUserValidation } from "@/lib/Validate";
 import { Form, FormControl } from "../ui/form";
 import CustomField from "../CustomFormFields";
 import { SelectItem } from "../ui/select";
@@ -10,15 +10,17 @@ import listings from "../constants/data.js";
 import UploadFile from "@/components/RegisterForm/UploadFIle";
 import SubmitBtn from "../SubmitBtn";
 import { registerFormKeys } from "@/components/constants/index";
-import {
-  convertFileToUrl,
-  getFileSizeInMb,
-  readFileAsBase64,
-} from "@/lib/utils";
+import { snackFn } from "@/components/snackbar/index";
+import { getFileSizeInMb, readFileAsBase64 } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 const RegisterForm = () => {
-  const [dateSelet, setDateSelect] = useState(new Date());
+  const { toast } = useToast();
+
+  const toastConfig = snackFn;
+  const [dateSelect, setDateSelect] = useState(new Date());
   const [image, setImage] = useState("");
+  const [errorWatch, setErrorWatch] = useState(false);
   const form = useForm({
     resolver: zodResolver(managementUserValidation),
     defaultValues: {
@@ -26,99 +28,133 @@ const RegisterForm = () => {
     },
   });
 
-  // organization type watch
   const organizationType = useWatch({
     control: form.control,
     name: "organizationTypes",
   });
-  // management size watch
   const managementSize = useWatch({
     control: form.control,
     name: "managementSize",
   });
-  // organizatio status type
   const organizationPrivatePublic = useWatch({
     control: form.control,
     name: "organizationPrivatePublic",
   });
-
-  // organization size
   const organizationSize = useWatch({
     control: form.control,
     name: "organizationSize",
   });
-  // Education Level
   const educationLevel = useWatch({
     control: form.control,
     name: "educationLevel",
   });
-
-  // user role
   const userRole = useWatch({
     control: form.control,
     name: "userRole",
   });
-  // organization logo
   const organizationLogo = useWatch({
     control: form.control,
     name: "organizationLogo",
   });
+  const password = useWatch({
+    control: form.control,
+    name: "password",
+  });
+  const confirmPassword = useWatch({
+    control: form.control,
+    name: "confirmPassword",
+  });
 
+  useEffect(() => {
+    if (form.formState.errors) {
+      console.log("errors", form.formState.errors);
+      setErrorWatch(true);
+    }
+  }, [form]);
 
-  // submit form function
-
-  const onSubmit = async (e) => {
-    e?.preventDefault();
-    const allFormValues = form.getValues();
-    if (!organizationLogo) {
-      return Error("Nothing here");
+  const submit = async (data) => {
+    if (errorWatch) {
+      toast(
+        toastConfig(
+          "Form validation error",
+          "Please fix the errors in the form",
+          "",
+          "error"
+        )
+      );
+      return;
     }
-    const file = organizationLogo[0];
-    // create object url with type as an image
-    const ext = file.name.split(".").pop();
-    const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
-    if (!extensions.includes(ext)) {
-      // if extension is not in the list of extensions
-      throw new Error("No Image");
-    }
-    const sizeInMb = getFileSizeInMb(file);
-    if (sizeInMb > 2) {
-      throw new Error("Image size is too large. Max size is 2MB");
-    }
-    if (
-      organizationSize === "" ||
-      organizationPrivatePublic === "" ||
-      organizationLogo === "" ||
-      organizationLogo[0] === "" ||
-      organizationSize === "" ||
-      organizationLogo[0].size === 0 ||
-      managementSize === "" ||
-      educationLevel === "" ||
-      userRole === ""
-    ) {
-      return Error("Please fill out all required fields");
-    }
+    const formValues = form.getValues();
     try {
+      if (
+        !organizationSize ||
+        !organizationPrivatePublic ||
+        !organizationLogo ||
+        !managementSize ||
+        !educationLevel ||
+        !userRole
+      ) {
+        toast(
+          toastConfig(
+            "All fields required",
+            "Please fill out all required fields",
+            "",
+            "error"
+          )
+        );
+        return;
+      }
+
+      const file = organizationLogo[0];
+      const ext = file.name.split(".").pop();
+      const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
+      if (!extensions.includes(ext)) {
+        throw new Error("Invalid file type");
+      }
+
+      const sizeInMb = getFileSizeInMb(file);
+      if (sizeInMb > 2) {
+        throw new Error("Image size is too large. Max size is 2MB");
+      }
+
       const fileContent = await readFileAsBase64(file);
-      allFormValues.organizationLogo = fileContent;
-      console.log(allFormValues);
-      return fileContent;
+      formValues.organizationLogo = fileContent;
+
+      if (password !== confirmPassword) {
+        toast(
+          toastConfig(
+            "Passwords mismatch!",
+            "Passwords should match",
+            "",
+            "error"
+          )
+        );
+        return;
+      }
+
+      toast(
+        toastConfig(
+          "Form submitted successfully",
+          "Your registration has been submitted successfully.",
+          "",
+          "success"
+        )
+      );
     } catch (error) {
-      console.log(error);
-      setImage("");
+      console.error(error);
+      toast(toastConfig("Submission error", error.message, "", "error"));
     }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={form.handleSubmit(submit)}>
         <section className="my-12 space-y-4">
           <h1 className="header">Welcome... </h1>
           <p className="text-dark-700">
             Please fill out the form below to register as a new management user.
           </p>
         </section>
-        {/* BASIC INFORMATION */}
         <div>
           <h1 className="space-y-4 my-7">Basic Information</h1>
           <CustomField
@@ -149,7 +185,6 @@ const RegisterForm = () => {
             ))}
           </CustomField>
 
-          {/* Name of organization and organization email */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
@@ -168,9 +203,7 @@ const RegisterForm = () => {
               placeholder="horizon@org.com"
             />
           </div>
-          {/* Name of organization and organization email */}
 
-          {/* Organization address and contact */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
@@ -188,27 +221,22 @@ const RegisterForm = () => {
               register={form.register}
             />
           </div>
-          {/* Organization address and contact */}
 
-          {/* management size and organization level */}
           <div className="flex flex-col xl:flex-row gap-6">
-            {/* management size  */}
             <CustomField
               fieldType="select"
               name="managementSize"
+              placeholder="Management Size"
               label="Management Size"
               control={form.control}
               register={form.register}
-              type="number"
             >
               <SelectItem value="5 - 20">5 - 20</SelectItem>
               <SelectItem value="50 - 100">50 - 100</SelectItem>
               <SelectItem value="200 - 500">200 - 500</SelectItem>
               <SelectItem value="1000 - 2000">1000 - 2000</SelectItem>
             </CustomField>
-            {/* management size  */}
 
-            {/* Organization Levels */}
             {organizationType === "Education" ? (
               <CustomField
                 fieldType="select"
@@ -272,11 +300,8 @@ const RegisterForm = () => {
                 </CustomField>
               )
             )}
-            {/* Organization Levels */}
           </div>
-          {/* Organization size and organization level */}
 
-          {/* Admin Name and User Role */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
@@ -294,21 +319,19 @@ const RegisterForm = () => {
               label="User Role"
               name="userRole"
             >
-              <SelectItem value={"Admin"}>Admin</SelectItem>
-              <SelectItem value={"Manager"} disabled>
+              <SelectItem value="Admin">Admin</SelectItem>
+              <SelectItem value="Manager" disabled>
                 Manager
               </SelectItem>
-              <SelectItem disabled value={"Developer"}>
+              <SelectItem value="Developer" disabled>
                 Developer
               </SelectItem>
-              <SelectItem disabled value={"User"}>
+              <SelectItem value="User" disabled>
                 User
               </SelectItem>
             </CustomField>
           </div>
-          {/* Admin Name and User Role */}
 
-          {/* user Address and User phone */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
@@ -327,9 +350,7 @@ const RegisterForm = () => {
               name="phoneNumber"
             />
           </div>
-          {/* Admin Name and User Role */}
 
-          {/* user Address and User phone */}
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
@@ -351,9 +372,7 @@ const RegisterForm = () => {
             />
           </div>
         </div>
-        {/* BASIC INFORMATION */}
 
-        {/* SPECIFIC INFORMATION */}
         <div>
           <h1 className="space-y-4 my-7">Specific Information</h1>
           <CustomField
@@ -361,14 +380,12 @@ const RegisterForm = () => {
             control={form.control}
             register={form.register}
             placeholder="Organization Status type"
-            label="
-            State Of Organization
-            "
+            label="State Of Organization"
             name="organizationPrivatePublic"
           >
-            <SelectItem value={"Private"}>Private</SelectItem>
-            <SelectItem value={"Public"}>Public</SelectItem>
-            <SelectItem value={"NGO"}>NGO</SelectItem>
+            <SelectItem value="Private">Private</SelectItem>
+            <SelectItem value="Public">Public</SelectItem>
+            <SelectItem value="NGO">NGO</SelectItem>
           </CustomField>
 
           <div className="flex flex-col xl:flex-row gap-6">
@@ -378,7 +395,7 @@ const RegisterForm = () => {
               label="Establishment Date"
               control={form.control}
               register={form.register}
-              placeholder="john.doe@organization.com"
+              placeholder="Establishment Date"
             />
             <CustomField
               fieldType="select"
@@ -386,6 +403,7 @@ const RegisterForm = () => {
               label="Organization Size"
               control={form.control}
               register={form.register}
+              placeholder="Organization Size"
             >
               <SelectItem value="Small">Small</SelectItem>
               <SelectItem value="Medium">Medium</SelectItem>
@@ -400,10 +418,10 @@ const RegisterForm = () => {
             register={form.register}
             label="Describe your organization/institution"
             name="organizationDescription"
-            type="number"
+            type="text"
           />
         </div>
-        {/* SPECIFIC INFORMATION */}
+
         <CustomField
           fieldType="skeleton"
           name="organizationLogo"
@@ -417,7 +435,8 @@ const RegisterForm = () => {
             );
           }}
         />
-        <SubmitBtn>Submit</SubmitBtn>
+
+        <SubmitBtn handleSubmit={() => submit(form)}>Submit</SubmitBtn>
       </form>
     </Form>
   );

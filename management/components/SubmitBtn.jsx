@@ -3,12 +3,13 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { Icons } from "./constants/icons";
 
-const SubmitBtn = ({ isLoading, className, children }) => {
+const SubmitBtn = ({ isLoading, className, children, handleSubmit }) => {
   return (
     <Button
       type="submit"
       disabled={isLoading}
       className="shad-primary-btn w-full mt-10 "
+      onClick={handleSubmit}
     >
       {isLoading ? (
         <div className="flex items-center gap-4 ">
