@@ -11,14 +11,18 @@ import UploadFile from "@/components/RegisterForm/UploadFIle";
 import SubmitBtn from "../SubmitBtn";
 import { registerFormKeys } from "@/components/constants/index";
 import { snackFn } from "@/components/snackbar/index";
-import { getFileSizeInMb, readFileAsBase64 } from "@/lib/utils";
+import {
+  acceptFile,
+  ErrorFunc,
+  getFileSizeInMb,
+  readFileAsBase64,
+} from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 
 const RegisterForm = () => {
   const { toast } = useToast();
 
   const toastConfig = snackFn;
-
   const [dateSelect, setDateSelect] = useState(new Date());
   const [image, setImage] = useState("");
   const [errorWatch, setErrorWatch] = useState(false);
@@ -69,88 +73,42 @@ const RegisterForm = () => {
   useEffect(() => {
     const hasErrors = Object.keys(form.formState.errors).length > 0;
     if (hasErrors) {
-      console.log("errors", form.formState.errors);
       setErrorWatch(true);
     } else {
       setErrorWatch(false);
-      console.log("No error found");
     }
   }, [form.formState.errors, form.getValues()]);
+
+
+  
   const submit = async (data) => {
-    const objeError = {
-      extError: toast(
-        toastConfig(
-          "Passwords mismatch!",
-          "Passwords should match",
-          "",
-          "error"
-        )
-      ),
-      passwordMismatch: toast(
-        toastConfig(
-          "Passwords mismatch!",
-          "Passwords should match",
-          "",
-          "error"
-        )
-      ),
-      passwordLength: toast(
-        toastConfig(
-          "Password too short!",
-          "Password should be at least 8 characters long",
-          "",
-          "error"
-        )
-      ),
-      passwordSpecialChar: toast(
-        toastConfig(
-          "Password too weak!",
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-          "",
-          "error"
-        )
-      ),
-    };
-    console.log(errorWatch);
+    const errorMap = ErrorFunc(toast, toastConfig);
 
     if (errorWatch) {
-      toast(
-        toastConfig(
-          "Form validation error",
-          "Please fix the errors in the form",
-          "",
-          "error"
-        )
-      );
+      errorMap.validationError;
       return;
     }
     const formValues = form.getValues();
 
     try {
-      const file = organizationLogo[0];
-      const ext = file.name.split(".").pop();
-      const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
-      if (!extensions.includes(ext)) {
-        throw new Error("Invalid file type");
+      if (
+        !organizationSize ||
+        !organizationPrivatePublic ||
+        !organizationLogo ||
+        !managementSize ||
+        !educationLevel ||
+        !userRole
+      ) {
+        errorMap.requiredFields;
+        return;
       }
 
-      const sizeInMb = getFileSizeInMb(file);
-      if (sizeInMb > 2) {
-        throw new Error("Image size is too large. Max size is 2MB");
-      }
+      const fileAccepts = await acceptFile(file, errorMap);
 
-      const fileContent = await readFileAsBase64(file);
-      formValues.organizationLogo = fileContent;
+      formValues.organizationLogo = fileAccepts;
 
       if (password !== confirmPassword) {
-        toast(
-          toastConfig(
-            "Passwords mismatch!",
-            "Passwords should match",
-            "",
-            "error"
-          )
-        );
+        errorMap.passwordMismatch;
         return;
       }
 

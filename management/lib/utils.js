@@ -40,14 +40,71 @@ export const acceptFile = async (file, error) => {
   const ext = acceptedFile.name.split(".").pop();
   const validExtensions = [".jpg", ".jpeg", ".png"];
   if (!validExtensions.includes(ext)) {
-    error?.extError;
+    error?.imageType;
     return;
   }
-  const sizeInMb = getFileSizeInMb(acceptedFile)
-  if (sizeInMb > 2) { 
-    error.sizeError;
+  const sizeInMb = getFileSizeInMb(acceptedFile);
+  if (sizeInMb > 2) {
+    error.imageSize;
     return;
   }
-  const fileContent = await readFileAsBase64(acceptedFile)
-  return fileContent
+  const fileContent = await readFileAsBase64(acceptedFile);
+  return fileContent;
+};
+
+export const ErrorFunc = (toast, toastConfig) => {
+  return {
+    passwordMismatch: toast(
+      toastConfig("Passwords mismatch!", "Passwords should match", "", "error")
+    ),
+    passwordLength: toast(
+      toastConfig(
+        "Password too short!",
+        "Password should be at least 8 characters long",
+        "",
+        "error"
+      )
+    ),
+    passwordSpecialChar: toast(
+      toastConfig(
+        "Password too weak!",
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        "",
+        "error"
+      )
+    ),
+    // image size error
+    imageSize: toast(
+      toastConfig(
+        "Image too large!",
+        "Image size should not exceed 2MB",
+        "",
+        "error"
+      )
+    ),
+    imageType: toast(
+      toastConfig(
+        "Invalid file type!",
+        "Only PNG, JPG, JPEG, GIF, and SVG images are allowed",
+        "",
+        "error"
+      )
+    ),
+    requiredFields: toast(
+      toastConfig(
+        "All fields required",
+        "Please fill out all required fields",
+        "",
+        "error"
+      )
+    ),
+    validationError: toast(
+      toastConfig(
+        "Form validation error",
+        "Please fix the errors in the form",
+        "",
+        "error"
+      )
+    ),
+  };
 };
