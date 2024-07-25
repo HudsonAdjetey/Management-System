@@ -13,14 +13,20 @@ import { registerFormKeys } from "@/components/constants/index";
 import { snackFn } from "@/components/snackbar/index";
 import {
   acceptFile,
+  convertFileToUrl,
   ErrorFunc,
   getFileSizeInMb,
   readFileAsBase64,
 } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../lib/dataFetch";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const RegisterForm = () => {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const search = searchParams.get("userID");
 
   const toastConfig = snackFn;
   const [dateSelect, setDateSelect] = useState(new Date());
@@ -79,8 +85,19 @@ const RegisterForm = () => {
     }
   }, [form.formState.errors, form.getValues()]);
 
-  const submit = async (e) => {
+  const useMutateUpload = useMutation({
+    queryKey: ["register, organization"],
+    mutationFn: async (values) => {
+      return await api.post("user/delete-temp/user-create", values);
+    },
+    // enabled when errorwatch is falsy
+    // enabled: !errorWatch,
+  });
+
+  const submit = async () => {
+    console.log("Hello");
     const formValues = form.getValues();
+    console.log(formValues);
     const errorMap = ErrorFunc(toast, toastConfig);
 
     if (password !== confirmPassword) {
@@ -94,7 +111,10 @@ const RegisterForm = () => {
       );
       return;
     }
-
+    if (errorWatch) {
+      errorMap.validationError;
+      return;
+    }
     try {
       if (
         !organizationSize ||
@@ -104,6 +124,7 @@ const RegisterForm = () => {
         !educationLevel ||
         !userRole
       ) {
+        console.log("Mapping");
         errorMap.requiredFields;
         return;
       }
@@ -128,22 +149,32 @@ const RegisterForm = () => {
         return;
       }
 
-      if (errorWatch) {
-        errorMap.validationError;
-        return;
+      if (errorWatch === false) {
+        const fileI = convertFileToUrl(organizationLogo[0]);
+        organizationLogo = fileI.split("blob:")[1];
+        const insertImage = fileI.split("blob:")[1];
+        const res = await useMutateUpload.mutateAsync({
+          ...formValues,
+          devID: "66a27f120a6988701eff1013",
+          organizationLogo: insertImage,
+          userRole,
+        });
+        console.log(res);
+        toast(
+          toastConfig(
+            "Form submitted successfully",
+            "Your registration has been submitted successfully.",
+            "",
+            "success"
+          )
+        );
       }
-      toast(
-        toastConfig(
-          "Form submitted successfully",
-          "Your registration has been submitted successfully.",
-          "",
-          "success"
-        )
-      );
       //  toast(toastConfig("Submission error", error.message, "", "error"));
     } catch (error) {
       console.error(error);
-      toast(toastConfig("Submission error", error.message, "", "error"));
+      if (error) {
+        toast(toastConfig("Submission error", error.message, "", "error"));
+      }
     }
   };
 
@@ -197,6 +228,7 @@ const RegisterForm = () => {
             />
             <CustomField
               fieldType="input"
+              type="email"
               name="organizationEmail"
               label="Organization Email Address"
               control={form.control}
@@ -336,11 +368,12 @@ const RegisterForm = () => {
           <div className="flex flex-col xl:flex-row gap-6">
             <CustomField
               fieldType="input"
-              name="userAddress"
-              label="Address"
+              name="email"
+              label="Email Address"
               control={form.control}
               register={form.register}
-              placeholder="Main street, King Town"
+              placeholder="user@gmail.com"
+              type="email"
             />
             <CustomField
               fieldType="phoneInput"
@@ -437,7 +470,7 @@ const RegisterForm = () => {
           }}
         />
 
-        <SubmitBtn handleSubmit={() => submit(form)}>Submit</SubmitBtn>
+        <SubmitBtn>Submit</SubmitBtn>
       </form>
     </Form>
   );

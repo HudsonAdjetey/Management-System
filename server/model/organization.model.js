@@ -10,7 +10,6 @@ const organizationTypeSchema = new Schema(
     organizationName: {
       type: String,
       required: true,
-      unique: [true, "Choose another organization Name"],
     },
     // if organization type is education
     educationlevel: {

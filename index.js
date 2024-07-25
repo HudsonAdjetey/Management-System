@@ -246,3 +246,79 @@ const PassKeyModal = () => {
 };
 
 export default PassKeyModal;
+
+const formValues = form.getValues();
+console.log(formValues);
+const errorMap = ErrorFunc(toast, toastConfig);
+
+if (password !== confirmPassword) {
+  toast(
+    toastConfig("Passwords mismatch!", "Passwords should match", "", "error")
+  );
+  return;
+}
+if (errorWatch) {
+  errorMap.validationError;
+  return;
+}
+try {
+  if (
+    !organizationSize ||
+    !organizationPrivatePublic ||
+    !organizationLogo ||
+    !managementSize ||
+    !educationLevel ||
+    !userRole
+  ) {
+    console.log("Mapping");
+    errorMap.requiredFields;
+    return;
+  }
+
+  let acceptFile = organizationLogo[0];
+  const ext = acceptFile.name.split(".").pop().toLowerCase();
+  const validExtensions = ["jpg", "jpeg", "png"];
+
+  if (!validExtensions.includes(ext)) {
+    errorMap.imageType;
+    return;
+  }
+
+  const sizeInMb = getFileSizeInMb(acceptFile);
+  if (sizeInMb > 2) {
+    errorMap.imageSize;
+    return;
+  }
+
+  if (password === "") {
+    errorMap.requiredFields;
+    return;
+  }
+
+  if (errorWatch === false) {
+    const fileI = convertFileToUrl(organizationLogo[0]);
+    organizationLogo = fileI.split("blob:")[1];
+    const insertImage = fileI.split("blob:")[1];
+    const res = await useMutateUpload.mutateAsync({
+      ...formValues,
+      devID: "66a27f120a6988701eff1013",
+      organizationLogo: insertImage,
+      userRole,
+    });
+    console.log(res);
+    toast(
+      toastConfig(
+        "Form submitted successfully",
+        "Your registration has been submitted successfully.",
+        "",
+        "success"
+      )
+    );
+  }
+  //  toast(toastConfig("Submission error", error.message, "", "error"));
+} catch (error) {
+  console.error(error);
+  if (error) {
+    toast(toastConfig("Submission error", error.message, "", "error"));
+  }
+}

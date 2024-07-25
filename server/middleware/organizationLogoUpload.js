@@ -1,27 +1,25 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-// set a storage engine
+// Set up storage engine
 const storage = multer.diskStorage({
-  //   destination
   destination: (req, file, cb) => {
-    const dir_upload = "../uploads";
+    const dir_upload = "./uploads";
     if (!fs.existsSync(dir_upload)) {
-      fs.mkdirSync(dir_upload);
+      console.log(dir_upload);
+      fs.mkdirSync(dir_upload, { recursive: true });
     }
     cb(null, dir_upload);
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-// initialize multer
 const upload = multer({
   storage: storage,
-  // file limit or size
-  limits: { fileSize: 1000000 },
-  fileFilter: function (req, file, cb) {
+  limits: { fileSize: 1000000 }, // 1MB
+  fileFilter: (req, file, cb) => {
     const filetypes = /jpg|jpeg|png|gif/;
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()

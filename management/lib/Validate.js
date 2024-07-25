@@ -1,7 +1,19 @@
 import { z } from "zod";
 
 const mongoDBObjectIdPattern = /^[0-9a-fA-F]{24}$/;
+const validateFile = (file) => {
+  const validExtensions = ["jpg", "jpeg", "png"];
+  const maxSizeInMb = 2;
 
+  if (!file) {
+    return false;
+  }
+
+  const extension = file.name.split(".").pop().toLowerCase();
+  const sizeInMb = file.size / 1024 / 1024;
+
+  return validExtensions.includes(extension) && sizeInMb <= maxSizeInMb;
+};
 export const UserValidation = z.object({
   username: z
     .string()
@@ -55,6 +67,8 @@ export const managementUserValidation = z.object({
     .min(200, "Description should be at least 200 characters"),
 
   organizationSize: z.enum(["Small", "Medium", "Large", "Extra Large"]),
+  // organization logo type  -> string
+  // organization logo size  -> string
 
   establishmentDate: z.coerce.date({
     message: "Invalid date",
@@ -71,6 +85,13 @@ export const managementUserValidation = z.object({
   userRole: z.enum(["Admin", "Manager", "Developer", "User"]),
 
   password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+  confirmPassword: z
     .string()
     .min(8, "Password must be at least 8 characters")
     .regex(

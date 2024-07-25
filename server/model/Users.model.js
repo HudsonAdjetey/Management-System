@@ -15,11 +15,7 @@ const UserSchema = new Schema(
       unique: true,
       match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
-    devID: {
-      //   matches the user id
-      type: String,
-      match: /^[a-fA-F0-9]{24}$/,
-    },
+
     avatar: String,
 
     password: {
@@ -35,8 +31,6 @@ const UserSchema = new Schema(
     },
     userRole: {
       type: String,
-      enum: ["Admin", "Manager", "Developer", "User"],
-      default: "User",
     },
     organizationBelongTo: {
       type: Schema.Types.ObjectId,

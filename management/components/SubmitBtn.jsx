@@ -9,7 +9,7 @@ const SubmitBtn = ({ isLoading, className, children, handleSubmit }) => {
       type="submit"
       disabled={isLoading}
       className="shad-primary-btn w-full mt-10 "
-      onClick={handleSubmit}
+      // onClick={handleSubmit}
     >
       {isLoading ? (
         <div className="flex items-center gap-4 ">

@@ -98,57 +98,105 @@ const Backdoor = asyncHandler(async (req, res, next) => {
 // MODIFIY AND DELETE TEMPUSERS TO CREATE A NEW USER
 const CreateNewUser = asyncHandler(async (req, res, next) => {
   const presetAvatars = AvatarContainer || [];
-  const { devID, username, email, phoneNumber, password, ...others } = req.body;
+  const {
+    devID,
+    username,
+    email,
+    userRole,
+    phoneNumber,
+    password,
+    ...organizationData
+  } = req.body;
+
+  let organization;
+  let newUser;
+
+  console.log(userRole, devID);
   try {
     const defaultAvatar =
       presetAvatars[Math.floor(Math.random() * presetAvatars.length)];
     const checkTempUser = await TempUsers.findById(devID);
+
     if (!checkTempUser) {
       return res.status(404).json({
         message: "User not found",
       });
     }
 
-    const newUser = await Users.create({
-      devID,
+    // Create organization
+    organization = await OrganizationModel.create({
+      ...organizationData,
+      organizationLogo: req.file ? req.file.path : "",
+    });
+
+    if (!organization) {
+      return res.status(400).json({
+        message: "Failed to create organization",
+      });
+    }
+
+    // Create user linked to the organization
+    newUser = await Users.create({
       username,
       email,
       phoneNumber,
       password,
       avatar: req.file ? req.file.path : defaultAvatar,
+      organizationBelongTo: organization._id,
+      userRole,
     });
-    await TempUsers.findByIdAndDelete(devID);
-    // delete the the upload file path
-    if (newUser) {
-      // create organization
-      await OrganizationModel.create({
-        ...req.body,
+
+    if (!newUser) {
+      await OrganizationModel.findByIdAndDelete(organization._id);
+      return res.status(400).json({
+        message: "Failed to create user",
       });
-      fs.unlinkSync(req.file.path);
     }
+
+    // Add user to organization's team array
+    organization.organizationTeams = [newUser._id];
+    if (userRole === "Admin") {
+      organization.organizationAdmin = newUser._id;
+    }
+    await organization.save();
+
+    // Delete temp user
+    await TempUsers.findByIdAndDelete(devID);
+
+    // If everything is successful
     res.status(201).json({
-      message: "User created successfully",
+      message: "User and Organization created successfully",
     });
   } catch (error) {
+    // Rollback in case of error
+    if (organization && !newUser) {
+      await OrganizationModel.findByIdAndDelete(organization._id);
+    }
     console.error(error);
     next(error);
+  } finally {
+    // Clean up uploaded file if any error occurred
+    if (req.file && req.file.path) {
+      fs.unlinkSync(req.file.path);
+    }
   }
 });
 
+module.exports = CreateNewUser;
+
+module.exports = CreateNewUser;
+
 const confirmNextStepCreate = asyncHandler(async (req, res, next) => {
   try {
-    const {userId}  = req.body
+    const { userId } = req.body;
     // check if the userID matches a user
-    const checkUser = await Users.findById(userId)
+    const checkUser = await Users.findById(userId);
     if (!checkUser) {
       return res.status(404).json({
         message: "User not found",
       });
     }
-  } catch (error) {
-    
-  }
-})
-
+  } catch (error) {}
+});
 
 module.exports = { CheckTempUser, StoreOtp, CreateNewUser, Backdoor };
