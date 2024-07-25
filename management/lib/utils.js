@@ -45,9 +45,11 @@ export const acceptFile = async (file, error) => {
   }
   const sizeInMb = getFileSizeInMb(acceptedFile);
   if (sizeInMb > 2) {
+    console.log("Yep");
     error.imageSize;
     return;
   }
+  console.log("Nope");
   const fileContent = await readFileAsBase64(acceptedFile);
   return fileContent;
 };

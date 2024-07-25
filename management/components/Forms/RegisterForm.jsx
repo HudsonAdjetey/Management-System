@@ -57,7 +57,7 @@ const RegisterForm = () => {
     control: form.control,
     name: "userRole",
   });
-  const organizationLogo = useWatch({
+  let organizationLogo = useWatch({
     control: form.control,
     name: "organizationLogo",
   });
@@ -79,16 +79,21 @@ const RegisterForm = () => {
     }
   }, [form.formState.errors, form.getValues()]);
 
-
-  
-  const submit = async (data) => {
+  const submit = async (e) => {
+    const formValues = form.getValues();
     const errorMap = ErrorFunc(toast, toastConfig);
 
-    if (errorWatch) {
-      errorMap.validationError;
+    if (password !== confirmPassword) {
+      toast(
+        toastConfig(
+          "Passwords mismatch!",
+          "Passwords should match",
+          "",
+          "error"
+        )
+      );
       return;
     }
-    const formValues = form.getValues();
 
     try {
       if (
@@ -103,15 +108,30 @@ const RegisterForm = () => {
         return;
       }
 
-      const fileAccepts = await acceptFile(file, errorMap);
+      let acceptFile = organizationLogo[0];
+      const ext = acceptFile.name.split(".").pop().toLowerCase();
+      const validExtensions = ["jpg", "jpeg", "png"];
 
-      formValues.organizationLogo = fileAccepts;
-
-      if (password !== confirmPassword) {
-        errorMap.passwordMismatch;
+      if (!validExtensions.includes(ext)) {
+        errorMap.imageType;
         return;
       }
 
+      const sizeInMb = getFileSizeInMb(acceptFile);
+      if (sizeInMb > 2) {
+        errorMap.imageSize;
+        return;
+      }
+
+      if (password === "") {
+        errorMap.requiredFields;
+        return;
+      }
+
+      if (errorWatch) {
+        errorMap.validationError;
+        return;
+      }
       toast(
         toastConfig(
           "Form submitted successfully",
@@ -120,6 +140,7 @@ const RegisterForm = () => {
           "success"
         )
       );
+      //  toast(toastConfig("Submission error", error.message, "", "error"));
     } catch (error) {
       console.error(error);
       toast(toastConfig("Submission error", error.message, "", "error"));

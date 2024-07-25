@@ -34,4 +34,4 @@ const upload = multer({
   },
 });
 
-module.exports = upload.single("avatar");
+module.exports = upload.single("organizationLogo");

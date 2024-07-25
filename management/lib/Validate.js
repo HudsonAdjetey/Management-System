@@ -31,7 +31,7 @@ export const managementUserValidation = z.object({
 
   organizationName: z
     .string()
-    .min(10, "Name must be at least 10 characters")
+    .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
 
   // organizationEducationLevels: z.enum(["Junior", "Senior", "University"]),

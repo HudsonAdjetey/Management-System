@@ -13,8 +13,9 @@ const organizationTypeSchema = new Schema(
       unique: [true, "Choose another organization Name"],
     },
     // if organization type is education
-    organizationEducationLevels: {
+    educationlevel: {
       type: String,
+      enum: ["Primary", "Secondary", "High School", "College"],
     },
     organizationEmail: {
       type: String,

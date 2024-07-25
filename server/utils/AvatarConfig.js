@@ -1,9 +1,9 @@
 const AvatarContainer = [
-  "/images/avatar1.png",
-  "/images/avatar2.png",
-  "/images/avatar3.png",
-  "/images/avatar4.png",
-  "/images/avatar5.png",
+  "../public/images/avatar1.png",
+  "../public/images/avatar2.png",
+  "../public/images/avatar3.png",
+  "../public/images/avatar4.png",
+  "../public/images/avatar5.png",
 ];
 
 module.exports = AvatarContainer;
