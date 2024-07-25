@@ -18,6 +18,7 @@ const RegisterForm = () => {
   const { toast } = useToast();
 
   const toastConfig = snackFn;
+
   const [dateSelect, setDateSelect] = useState(new Date());
   const [image, setImage] = useState("");
   const [errorWatch, setErrorWatch] = useState(false);
@@ -66,13 +67,52 @@ const RegisterForm = () => {
   });
 
   useEffect(() => {
-    if (form.formState.errors) {
+    const hasErrors = Object.keys(form.formState.errors).length > 0;
+    if (hasErrors) {
       console.log("errors", form.formState.errors);
       setErrorWatch(true);
+    } else {
+      setErrorWatch(false);
+      console.log("No error found");
     }
-  }, [form]);
-
+  }, [form.formState.errors, form.getValues()]);
   const submit = async (data) => {
+    const objeError = {
+      extError: toast(
+        toastConfig(
+          "Passwords mismatch!",
+          "Passwords should match",
+          "",
+          "error"
+        )
+      ),
+      passwordMismatch: toast(
+        toastConfig(
+          "Passwords mismatch!",
+          "Passwords should match",
+          "",
+          "error"
+        )
+      ),
+      passwordLength: toast(
+        toastConfig(
+          "Password too short!",
+          "Password should be at least 8 characters long",
+          "",
+          "error"
+        )
+      ),
+      passwordSpecialChar: toast(
+        toastConfig(
+          "Password too weak!",
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+          "",
+          "error"
+        )
+      ),
+    };
+    console.log(errorWatch);
+
     if (errorWatch) {
       toast(
         toastConfig(
@@ -85,26 +125,8 @@ const RegisterForm = () => {
       return;
     }
     const formValues = form.getValues();
-    try {
-      if (
-        !organizationSize ||
-        !organizationPrivatePublic ||
-        !organizationLogo ||
-        !managementSize ||
-        !educationLevel ||
-        !userRole
-      ) {
-        toast(
-          toastConfig(
-            "All fields required",
-            "Please fill out all required fields",
-            "",
-            "error"
-          )
-        );
-        return;
-      }
 
+    try {
       const file = organizationLogo[0];
       const ext = file.name.split(".").pop();
       const extensions = ["png", "jpg", "jpeg", "gif", "svg"];

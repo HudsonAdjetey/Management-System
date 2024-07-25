@@ -81,4 +81,7 @@ export const managementUserValidation = z.object({
   phoneNumber: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+
+  // for education
+  educationLevel: z.enum(["Primary", "Secondary", "High School", "College"]),
 });

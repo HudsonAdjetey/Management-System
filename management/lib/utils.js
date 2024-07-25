@@ -34,3 +34,20 @@ export const readFileAsBase64 = (file) => {
     reader.onerror = (err) => reject(err);
   });
 };
+
+export const acceptFile = async (file, error) => {
+  const acceptedFile = file[0];
+  const ext = acceptedFile.name.split(".").pop();
+  const validExtensions = [".jpg", ".jpeg", ".png"];
+  if (!validExtensions.includes(ext)) {
+    error?.extError;
+    return;
+  }
+  const sizeInMb = getFileSizeInMb(acceptedFile)
+  if (sizeInMb > 2) { 
+    error.sizeError;
+    return;
+  }
+  const fileContent = await readFileAsBase64(acceptedFile)
+  return fileContent
+};
