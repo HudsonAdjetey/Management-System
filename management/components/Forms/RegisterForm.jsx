@@ -94,87 +94,77 @@ const RegisterForm = () => {
     // enabled: !errorWatch,
   });
 
-  const submit = async () => {
-    console.log("Hello");
-    const formValues = form.getValues();
-    console.log(formValues);
+  const submit = async (values) => {
+    // get errors obje
     const errorMap = ErrorFunc(toast, toastConfig);
-
-    if (password !== confirmPassword) {
-      toast(
-        toastConfig(
-          "Passwords mismatch!",
-          "Passwords should match",
-          "",
-          "error"
-        )
-      );
-      return;
-    }
-    if (errorWatch) {
-      errorMap.validationError;
-      return;
-    }
-    try {
-      if (
-        !organizationSize ||
-        !organizationPrivatePublic ||
-        !organizationLogo ||
-        !managementSize ||
-        !educationLevel ||
-        !userRole
-      ) {
-        console.log("Mapping");
-        errorMap.requiredFields;
-        return;
-      }
-
-      let acceptFile = organizationLogo[0];
-      const ext = acceptFile.name.split(".").pop().toLowerCase();
-      const validExtensions = ["jpg", "jpeg", "png"];
-
-      if (!validExtensions.includes(ext)) {
+    // store file info in a form data
+    let formData;
+    if (values.organizationLogo && organizationLogo?.length > 0) {
+      // check for the file type and size
+      const file = organizationLogo[0];
+      const ext = file.name.split(".").pop();
+      const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
+      if (!extensions.includes(ext)) {
         errorMap.imageType;
         return;
       }
-
-      const sizeInMb = getFileSizeInMb(acceptFile);
-      if (sizeInMb > 2) {
+      const sizeInMb = getFileSizeInMb(file);
+      if (sizeInMb > 5) {
         errorMap.imageSize;
         return;
       }
-
-      if (password === "") {
-        errorMap.requiredFields;
+      const blobFile = new Blob([values.organizationLogo[0]], {
+        type: `image/${ext}`,
+      });
+      formData = new FormData();
+      formData.append("file", blobFile);
+      formData.append("fileName", values.organizationLogo[0].name);
+    }
+    // check for the file type and size
+    try {
+      const organization = {
+        organizationTypes: values.organizationTypes,
+        organizationName: values.organizationName,
+        organizationEmail: values.organizationEmail,
+        organizationPhoneNumber: values.organizationPhoneNumber,
+        organizationAddress: values.organizationAddress,
+        educationlevel: values.educationLevel,
+        churchLevel: values.churchLevel,
+        salesAndMarketing: values.salesAndMarketing,
+        userRole: userRole,
+        managementSize: values.managementSize,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
+        organizationPrivatePublic: values.organizationPrivatePublic,
+        organizationLogo: values.organizationLogo ? formData : undefined,
+        establishmentDate: values.establishmentDate,
+        userAddress: values.userAddress,
+        phoneNumber: values.phoneNumber,
+        organizationSize: values.organizationSize,
+        organizationDescription: values.organizationDescription,
+        email: values.email,
+        devID: search,
+      };
+      // if there is error Watch
+      if (errorWatch) {
+        errorMap.validationError;
         return;
       }
+      // call mutation function
 
-      if (errorWatch === false) {
-        const fileI = convertFileToUrl(organizationLogo[0]);
-        organizationLogo = fileI.split("blob:")[1];
-        const insertImage = fileI.split("blob:")[1];
-        const res = await useMutateUpload.mutateAsync({
-          ...formValues,
-          devID: "66a27f120a6988701eff1013",
-          organizationLogo: insertImage,
-          userRole,
-        });
-        console.log(res);
-        toast(
-          toastConfig(
-            "Form submitted successfully",
-            "Your registration has been submitted successfully.",
-            "",
-            "success"
-          )
-        );
-      }
-      //  toast(toastConfig("Submission error", error.message, "", "error"));
+      const result = await useMutateUpload.mutateAsync(organization);
+      toast(
+        toastConfig(
+          "Form submitted successfully",
+          "Your registration has been submitted successfully.",
+          "",
+          "success"
+        )
+      );
+      // router.push("/dashboard");
     } catch (error) {
       console.error(error);
-      if (error) {
-        toast(toastConfig("Submission error", error.message, "", "error"));
-      }
+      toast(toastConfig("Submission error", error.message, "", "error"));
     }
   };
 
