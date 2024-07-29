@@ -75,7 +75,6 @@ const RegisterForm = () => {
     control: form.control,
     name: "confirmPassword",
   });
-
   useEffect(() => {
     const hasErrors = Object.keys(form.formState.errors).length > 0;
     if (hasErrors) {
@@ -111,29 +110,7 @@ const RegisterForm = () => {
     const fileI = convertFileToUrl(organizationLogo[0]);
     const splitImg = fileI.split("blob:")[1];
     const insertImage = splitImg;
-    // store file info in a form data
-    let formData;
-    if (organizationLogo && organizationLogo?.length > 0) {
-      // check for the file type and size
-      const file = organizationLogo[0];
-      const ext = file.name.split(".").pop();
-      const extensions = ["png", "jpg", "jpeg", "gif", "svg"];
-      if (!extensions.includes(ext)) {
-        errorMap.imageType;
-        return;
-      }
-      const sizeInMb = getFileSizeInMb(file);
-      if (sizeInMb > 5) {
-        errorMap.imageSize;
-        return;
-      }
-      const blobFile = new Blob([organizationLogo[0]], {
-        type: `image/${ext}`,
-      });
-      formData = new FormData();
-      formData.append("file", blobFile);
-      formData.append("fileName", organizationLogo[0].name);
-    }
+    console.log("insertImage", insertImage);
     // check for the file type and size
     try {
       console.log("formValues", formValues);
@@ -153,12 +130,13 @@ const RegisterForm = () => {
         organizationPrivatePublic: values.organizationPrivatePublic,
         organizationLogo: organizationLogo ? insertImage : undefined,
         establishmentDate: values.establishmentDate,
+        username: formValues.username,
         userAddress: values.userAddress,
         phoneNumber: values.phoneNumber,
         organizationSize: values.organizationSize,
         organizationDescription: values.organizationDescription,
         email: formValues.email,
-        devID: search,
+        devID: "66a76100d16c4336df15927f",
       };
 
       // call mutation function
