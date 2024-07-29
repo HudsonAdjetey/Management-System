@@ -8,7 +8,7 @@ const SubmitBtn = ({ isLoading, className, children, handleSubmit }) => {
     <Button
       type="submit"
       disabled={isLoading}
-      className="shad-primary-btn w-full mt-10 "
+      className={`shad-primary-btn w-full  ${className ? "mt-3" : "mt-10"} `}
       // onClick={handleSubmit}
     >
       {isLoading ? (

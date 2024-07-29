@@ -28,6 +28,9 @@ export const UserValidation = z.object({
       (devID) => mongoDBObjectIdPattern.test(devID),
       "Invalid Development ID"
     ),
+  userID: z
+    .string()
+    .refine((userID) => mongoDBObjectIdPattern.test(userID), "Invalid ID"),
 
   password: z
     .string()

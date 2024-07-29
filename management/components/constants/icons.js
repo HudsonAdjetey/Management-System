@@ -3,6 +3,8 @@ import IconEmail from "../../public/assets/Icons/IconEmail.svg";
 import IconUser from "../../public/assets/Icons/IconUser.svg";
 import Loader from "../../public/assets/Icons/loader.svg";
 import Close from "../../public/assets/Icons/close.svg";
+import Copy from "../../public/assets/Icons/copy.svg";
+import Copied from "../../public/assets/Icons/copied.svg";
 
 export const Icons = {
   IconDataBase,
@@ -10,4 +12,6 @@ export const Icons = {
   IconUser,
   Loader,
   Close,
+  Copy,
+  Copied,
 };

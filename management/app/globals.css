@@ -105,6 +105,10 @@ body.dark {
     @apply mx-auto flex size-full flex-col py-10;
   }
 
+  .flex_container {
+    @apply h-screen max-h-screen flex items-center;
+  }
+
   .side-img {
     @apply hidden h-full object-cover md:block;
   }
