@@ -1,6 +1,7 @@
 "use client";
 import { api } from "@/lib/dataFetch";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const page = ({ params }) => {
@@ -9,7 +10,7 @@ const page = ({ params }) => {
   const [userID, setUserID] = useState(userIDParams);
   const [copied, setCopied] = useState(false);
   const [isChangedCopied, setIsChangedCopied] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     if (copied) {
       // set a timeout
@@ -31,12 +32,24 @@ const page = ({ params }) => {
   const userVerifyID = useQuery({
     queryKey: ["verifyUserID", userID],
     queryFn: async () => {
-      const response = await api.get(`user/verify/${userID}`);
-
+      const response = await api.put(`/verify/update/${userID}`);
+      console.log(response);
       return response.data;
     },
     keepPreviousData: true, // keep the previous data in the cache
   });
+
+  useEffect(() => {
+    if (userVerifyID.data && userVerifyID.isSuccess) {
+      console.log("User verified successfully");
+      // redirect to admin page
+      router.push("/admin/[userID]", `/admin/${userID}`);
+    } else if (userVerifyID.error) {
+      console.log("Error verifying user", userVerifyID.error);
+    } else {
+      console.log("User not verified yet");
+    }
+  }, [userVerifyID.data, userVerifyID.isSuccess]);
 
   return (
     <section className="section_main">
