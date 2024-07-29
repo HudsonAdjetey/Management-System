@@ -54,6 +54,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // routers
 app.use("/user/", TempUsersRouter);
+app.use("/", UserRouter);
 // app.use(UserRouter);
 
 // 404 Handler ~ Acceptance formats
