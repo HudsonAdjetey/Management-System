@@ -32,6 +32,10 @@ const UserSchema = new Schema(
     userRole: {
       type: String,
     },
+    newUser: {
+      type: Boolean,
+      default: false,
+    },
     organizationBelongTo: {
       type: Schema.Types.ObjectId,
       ref: "Organizations",

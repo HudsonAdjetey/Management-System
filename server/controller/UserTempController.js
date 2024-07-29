@@ -111,7 +111,6 @@ const CreateNewUser = asyncHandler(async (req, res, next) => {
   let organization;
   let newUser;
 
-  console.log(userRole, devID);
   try {
     const defaultAvatar =
       presetAvatars[Math.floor(Math.random() * presetAvatars.length)];
@@ -144,6 +143,8 @@ const CreateNewUser = asyncHandler(async (req, res, next) => {
       avatar: req.file ? req.file.path : defaultAvatar,
       organizationBelongTo: organization._id,
       userRole,
+      // new user
+      newUser: true,
     });
 
     if (!newUser) {
@@ -180,23 +181,6 @@ const CreateNewUser = asyncHandler(async (req, res, next) => {
       fs.unlinkSync(req.file.path);
     }
   }
-});
-
-module.exports = CreateNewUser;
-
-module.exports = CreateNewUser;
-
-const confirmNextStepCreate = asyncHandler(async (req, res, next) => {
-  try {
-    const { userId } = req.body;
-    // check if the userID matches a user
-    const checkUser = await Users.findById(userId);
-    if (!checkUser) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-  } catch (error) {}
 });
 
 module.exports = { CheckTempUser, StoreOtp, CreateNewUser, Backdoor };
