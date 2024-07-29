@@ -24,6 +24,7 @@ const page = ({ params }) => {
   const [userID, setUserID] = useState(userIDParams);
   const [copied, setCopied] = useState(false);
   const [isChangedCopied, setIsChangedCopied] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(UserValidation),
@@ -65,6 +66,7 @@ const page = ({ params }) => {
   useEffect(() => {
     if (userVerifyID.data && userVerifyID.isSuccess) {
       console.log("User verified successfully");
+      setIsSuccess(true);
       // redirect to admin page
       router.push("/admin/[userID]", `/admin/${userID}`);
     } else if (userVerifyID.error) {
@@ -78,7 +80,7 @@ const page = ({ params }) => {
     <section className="section_main flex_container ">
       <div className="flex  flex-col items-center mx-auto">
         <h1>Verify Account</h1>
-        <p>Please enter the verification code sent to your email.</p>
+        <p>Register your new created system.</p>
 
         {/* input field */}
         <div className="input_card bg-dark-200 mt-6 md:w-[450px] p-4 rounded-md">
@@ -114,10 +116,24 @@ const page = ({ params }) => {
                 </TooltipProvider>
               </div>
 
-              <SubmitBtn className={"-mt-6"}>Verify</SubmitBtn>
+              <SubmitBtn className={true}>Verify</SubmitBtn>
             </form>
           </Form>
         </div>
+        {!isSuccess && (
+          <div className="flex flex-col custom-dialog justify-center items-center mt-6">
+            <Image src={Icons.SuccessGif} width={400} height={400} />
+            <p className="text-green-500">Account verified successfully!</p>
+            <button
+              onClick={() => {
+                return router.replace(`/admin`);
+              }}
+              className="custom-button"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

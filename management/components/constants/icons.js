@@ -5,7 +5,7 @@ import Loader from "../../public/assets/Icons/loader.svg";
 import Close from "../../public/assets/Icons/close.svg";
 import Copy from "../../public/assets/Icons/copy.svg";
 import Copied from "../../public/assets/Icons/copied.svg";
-
+import SuccessGif from "../../public/assets/gifs/success.gif";
 export const Icons = {
   IconDataBase,
   IconEmail,
@@ -14,4 +14,5 @@ export const Icons = {
   Close,
   Copy,
   Copied,
+  SuccessGif,
 };

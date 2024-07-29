@@ -52,9 +52,10 @@ const config = {
         roboto: ["Roboto", "sans-serif"],
       },
       backgroundImage: {
-        /*   appointments: "url('/assets/images/appointments-bg.png')",
-        pending: "url('/assets/images/pending-bg.png')",
-        cancelled: "url('/assets/images/cancelled-bg.png')", */
+          students: "url('/assets/images/appointments-bg.png')",
+        teachers: "url('/assets/images/pending-bg.png')",
+        classes: "url('/assets/images/cancelled-bg.png')",
+        faculties: "url('/assets/images/cancelled-bg.png')",
       },
       keyframes: {
         "accordion-down": {
