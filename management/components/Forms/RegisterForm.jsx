@@ -83,7 +83,7 @@ const RegisterForm = () => {
     } else {
       setErrorWatch(false);
     }
-  }, [form.formState.errors, form.getValues()]);
+  }, [form]);
 
   const useMutateUpload = useMutation({
     queryKey: ["register, organization"],
@@ -95,11 +95,25 @@ const RegisterForm = () => {
   });
 
   const submit = async (values) => {
+    // if there is error Watch
+    if (confirmPassword !== password) {
+      errorMap.validationError;
+      return;
+    }
+
+    if (password === "") {
+      errorMap.requiredFields;
+      return;
+    }
     // get errors obje
     const errorMap = ErrorFunc(toast, toastConfig);
+    const formValues = form.getValues();
+    const fileI = convertFileToUrl(organizationLogo[0]);
+    const splitImg = fileI.split("blob:")[1];
+    const insertImage = splitImg;
     // store file info in a form data
     let formData;
-    if (values.organizationLogo && organizationLogo?.length > 0) {
+    if (organizationLogo && organizationLogo?.length > 0) {
       // check for the file type and size
       const file = organizationLogo[0];
       const ext = file.name.split(".").pop();
@@ -113,15 +127,16 @@ const RegisterForm = () => {
         errorMap.imageSize;
         return;
       }
-      const blobFile = new Blob([values.organizationLogo[0]], {
+      const blobFile = new Blob([organizationLogo[0]], {
         type: `image/${ext}`,
       });
       formData = new FormData();
       formData.append("file", blobFile);
-      formData.append("fileName", values.organizationLogo[0].name);
+      formData.append("fileName", organizationLogo[0].name);
     }
     // check for the file type and size
     try {
+      console.log("formValues", formValues);
       const organization = {
         organizationTypes: values.organizationTypes,
         organizationName: values.organizationName,
@@ -133,25 +148,21 @@ const RegisterForm = () => {
         salesAndMarketing: values.salesAndMarketing,
         userRole: userRole,
         managementSize: values.managementSize,
-        password: values.password,
-        confirmPassword: values.confirmPassword,
+        password: password,
+        confirmPassword: confirmPassword,
         organizationPrivatePublic: values.organizationPrivatePublic,
-        organizationLogo: values.organizationLogo ? formData : undefined,
+        organizationLogo: organizationLogo ? insertImage : undefined,
         establishmentDate: values.establishmentDate,
         userAddress: values.userAddress,
         phoneNumber: values.phoneNumber,
         organizationSize: values.organizationSize,
         organizationDescription: values.organizationDescription,
-        email: values.email,
+        email: formValues.email,
         devID: search,
       };
-      // if there is error Watch
-      if (errorWatch) {
-        errorMap.validationError;
-        return;
-      }
-      // call mutation function
 
+      // call mutation function
+      console.log("organization", organization);
       const result = await useMutateUpload.mutateAsync(organization);
       toast(
         toastConfig(
@@ -161,6 +172,7 @@ const RegisterForm = () => {
           "success"
         )
       );
+      console.log("result", result);
       // router.push("/dashboard");
     } catch (error) {
       console.error(error);
