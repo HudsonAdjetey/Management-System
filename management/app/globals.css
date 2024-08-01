@@ -86,7 +86,7 @@ body.dark {
   .custom-dialog {
     /*    @apply w-screen h-screen fixed top-0 left-0 bg-black-200 bg-opacity-80 z-50 flex items-center justify-center;
     display: none; */
-    @apply w-screen h-screen fixed bg-black bg-opacity-80 top-0 left-0 right-0 bottom-0 overflow-hidden flex items-center justify-center;
+    @apply w-screen h-screen fixed bg-black bg-opacity-90 top-0 left-0 right-0 bottom-0 overflow-hidden flex items-center justify-center;
   }
 
   .clip-text {
