@@ -17,6 +17,9 @@ const page = () => {
         </Link>
         <p className="text-16-semibold">Admin Dashboard</p>
       </header>
+      <main className="admin-main">
+        
+      </main>
     </div>
   );
 };
