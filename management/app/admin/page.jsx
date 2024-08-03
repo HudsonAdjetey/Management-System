@@ -20,6 +20,9 @@ const page = () => {
       <main className="admin-main">
         <div className="section w-full space-y-4">
           <h1 className="header">Welcome</h1>
+          <p className="text-dark-700">
+            Start the day with managing new appointments
+          </p>
         </div>
       </main>
     </div>
