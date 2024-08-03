@@ -18,7 +18,9 @@ const page = () => {
         <p className="text-16-semibold">Admin Dashboard</p>
       </header>
       <main className="admin-main">
-        
+        <div className="section w-full space-y-4">
+          <h1 className="header">Welcome</h1>
+        </div>
       </main>
     </div>
   );
