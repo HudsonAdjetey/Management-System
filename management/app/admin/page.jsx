@@ -35,7 +35,10 @@ const page = () => {
         {/* admin stat */}
         <section className="admin-stat">
           {/* implement card formality */}
-          <StatCard />
+          <StatCard type={"students"} count={4} />
+          <StatCard type={"teachers"} count={4} />
+          <StatCard type={"classes"} count={4} />
+          <StatCard type={"faculties"} count={4} />
         </section>
         {/* admin stat */}
       </main>
