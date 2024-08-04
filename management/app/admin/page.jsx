@@ -9,8 +9,8 @@ const page = () => {
     <div className="mx-auto flex  flex-col space-y-14">
       <header className="admin-header">
         <div className="logo-menu flex  items-center gap-5 ">
-          <span>
-            <Image src={Icons.MenuIcon} />
+          <span className="border-r-2 px-2  border-[#EBF3FF]">
+            <Image src={Icons.MenuIcon} width={30} height={30} />
           </span>
           <Link href={"/"} className="cursor-pointer">
             <Image
