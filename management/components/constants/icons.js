@@ -6,6 +6,7 @@ import Close from "../../public/assets/Icons/close.svg";
 import Copy from "../../public/assets/Icons/copy.svg";
 import Copied from "../../public/assets/Icons/copied.svg";
 import SuccessGif from "../../public/assets/gifs/success.gif";
+import MenuIcon from "../../public/assets/gifs/menuIcon.svg";
 export const Icons = {
   IconDataBase,
   IconEmail,
@@ -15,4 +16,5 @@ export const Icons = {
   Copy,
   Copied,
   SuccessGif,
+  MenuIcon,
 };

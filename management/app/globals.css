@@ -59,6 +59,13 @@ body.dark {
   }
 }
 
+/*  */
+@layer components {
+  section {
+    @apply max-md:px-6;
+  }
+}
+
 @layer utilities {
   /* ===== UTILITIES */
 
