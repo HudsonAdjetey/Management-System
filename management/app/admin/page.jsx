@@ -24,7 +24,7 @@ const page = () => {
         </div>
         <p className="text-16-semibold">Admin Dashboard</p>
       </header>
-      <main className="admin-main max-w-7xl ">
+      <main className="admin-main ">
         <section className=" w-full space-y-4">
           <h1 className="header">Welcome</h1>
           <p className="text-dark-700">
@@ -33,12 +33,32 @@ const page = () => {
         </section>
 
         {/* admin stat */}
-        <section className="admin-stat">
+        <section className="admin-stat ">
           {/* implement card formality */}
-          <StatCard type={"students"} count={4} />
-          <StatCard type={"teachers"} count={4} />
-          <StatCard type={"classes"} count={4} />
-          <StatCard type={"faculties"} count={4} />
+          <StatCard
+            type={"students"}
+            count={4}
+            label={"Total Students"}
+            icon={Icons.StudentIcon}
+          />
+          <StatCard
+            type={"teachers"}
+            label={"Total Teachers"}
+            count={4}
+            icon={Icons.TeachersIcon}
+          />
+          <StatCard
+            type={"classes"}
+            label={"Total Classes"}
+            count={4}
+            icon={Icons.ClassesIcon}
+          />
+          <StatCard
+            type={"faculties"}
+            label={"Administrative Staff"}
+            count={4}
+            icon={Icons.AdminIcon}
+          />
         </section>
         {/* admin stat */}
       </main>
