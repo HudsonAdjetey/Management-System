@@ -1,4 +1,5 @@
 import { Images } from "@/components/constants/img";
+import { Icons } from "@/components/constants/icons";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -7,7 +8,10 @@ const page = () => {
   return (
     <div className="mx-auto flex  flex-col space-y-14">
       <header className="admin-header">
-        <div className="logo-menu">
+        <div className="logo-menu flex  items-center gap-5 ">
+          <span>
+            <Image src={Icons.MenuIcon} />
+          </span>
           <Link href={"/"} className="cursor-pointer">
             <Image
               src={Images.logo}
