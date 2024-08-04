@@ -3,6 +3,7 @@ import { Icons } from "@/components/constants/icons";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import StatCard from "@/components/StatCard";
 
 const page = () => {
   return (
@@ -34,7 +35,7 @@ const page = () => {
         {/* admin stat */}
         <section className="admin-stat">
           {/* implement card formality */}
-          <div className="flex flex-col space-y-4"></div>
+          <StatCard />
         </section>
         {/* admin stat */}
       </main>
