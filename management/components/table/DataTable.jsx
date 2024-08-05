@@ -18,66 +18,73 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import StatusBadge from "../StatusBadge";
+import { FormatDateTime } from "@/lib/utils";
+import dataInfo from "@/components/constants/dummy";
+import Image from "next/image";
 const DataTable = () => {
-  const data = [
-    {
-      firstName: "Tanner",
-      lastName: "Linsley",
-      age: 33,
-      visits: 100,
-      progress: 50,
-      status: "Married",
-    },
-    {
-      firstName: "Kevin",
-      lastName: "Vandy",
-      age: 27,
-      visits: 200,
-      progress: 100,
-      status: "Single",
-    },
-  ];
-
   const columns = [
     {
       header: "#",
       cell: ({ row }) => {
-        return <p className="text-14-medium ">{row.index + 1}</p>;
+        return <p className="text-14-medium">{row.index + 1}</p>;
       },
     },
     {
-      header: "First Name",
       accessorKey: "firstName",
-    },
-    {
-      header: "Last Name",
-      accessorKey: "lastName",
+      header: "First Name",
       cell: ({ row }) => {
-        const appointment = row.original;
-        return <p className="text-14-medium ">{appointment.lastName}</p>;
+        return <p className="text-14-medium">{row.original.firstName}</p>;
       },
     },
+
     {
-      header: "Age",
-      accessorKey: "age",
+      accessorKey: "lastName",
+      header: "Last Name",
+      cell: ({ row }) => {
+        return <p className="text-14-medium">{row.original.lastName}</p>;
+      },
     },
+    // admission id
     {
-      header: "Visits",
-      accessorKey: "visits",
+      accessorKey: "admissionId",
+      header: "Admission ID",
+      cell: ({ row }) => {
+        return <p className="text-14-medium">{row.original.admissionId}</p>;
+      },
     },
+    // status
     {
-      header: "Progress",
-      accessorKey: "progress",
-    },
-    {
-      header: "Status",
       accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const rowStatus = row.original;
+        return (
+          <div className="min-w-[115px]">
+            <StatusBadge status={rowStatus.status} />
+          </div>
+        );
+      },
+    },
+    // date issued
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ row }) => {
+        const rowItems = row.original;
+
+        return (
+          <p className="text-14-regular min-w-[100px]">
+            {FormatDateTime(rowItems.createdAt).dateTime}
+          </p>
+        );
+      },
     },
   ];
 
   const table = useReactTable({
     columns,
-    data,
+    data: dataInfo,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -114,13 +121,13 @@ const DataTable = () => {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "Selected"}
-                className="shad-table-row hover:bg-red-500"
+                className="shad-table-row hover:bg-[#1C2023] "
                 onClick={() => {
                   console.log(row.id);
                 }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell className="hover:bg-blue-500" key={cell.id}>
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -134,8 +141,30 @@ const DataTable = () => {
         </TableBody>
       </Table>
       <div className="table-actions">
-        <Button>Previous</Button>
-        <Button>Previous</Button>
+        <Button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="shad-gray-btn"
+          variant="outline"
+          size="sm"
+        >
+          <Image
+            src={"/assets/Icons/arrowLeft.svg"}
+            alt="arrow left icon"
+            width={24}
+            height={24}
+          />
+        </Button>
+        <Button className="shad-gray-btn">
+          <Image
+            src={"/assets/Icons/arrowRight.svg"}
+            alt="arrow right icon"
+            width={24}
+            height={24}
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          />
+        </Button>
       </div>
     </div>
   );

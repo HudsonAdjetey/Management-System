@@ -8,7 +8,8 @@ const StatusBadge = ({ status }) => {
     <div
       className={clsx("status-badge", {
         "bg-green-600": status === "approved",
-        "bg-yellow-500": status === "pending",
+        "bg-blue-600": status === "pending",
+
         "bg-red-600": status === "rejected",
       })}
     >

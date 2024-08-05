@@ -128,10 +128,57 @@ export const FormatDateTime = (date) => {
     year: "numeric",
     month: "short",
     day: "numeric",
-  }
+  };
 
   const dateOptions = {
-    
-  }
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+
+  const timeOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+
+  // format date time
+  const formattedDateTime = new Date(date).toLocaleString(
+    "en-US",
+    dateTimeOptions
+  );
+
+  // format date day
+  const formattedDateDay = new Date(date).toLocaleString(
+    "en-US",
+    dateDayOptions
+  );
+
+  // format date
+  const formattedDate = new Date(date).toLocaleString("en-US", dateOptions);
+
+  // format time
+  const formattedTime = new Date(date).toLocaleString("en-US", timeOptions);
+
+  // alternative format date time
   // return new Date(date).toLocaleString("en-US", options);
+
+  // alternative format date day
+  // return new Date(date).toLocaleString("en-US", options);
+
+  // alternative format date
+  // return new Date(date).toLocaleString("en-US", options);
+
+  // alternative format time
+  // return new Date(date).toLocaleString("en-US", options);
+
+  // alternative format both date and
+  // return new Date(date).toLocaleString("en-US", options);
+
+  return {
+    dateTime: formattedDateTime,
+    dateDay: formattedDateDay,
+    dateOnly: formattedDate,
+    timeOnly: formattedTime,
+  };
 };

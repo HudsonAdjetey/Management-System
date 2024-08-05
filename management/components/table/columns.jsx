@@ -1,6 +1,7 @@
+import { FormatDateTime } from "@/lib/utils";
 import StatusBadge from "../StatusBadge";
 
-export const columns = [
+const columns = [
   {
     header: "#",
     cell: ({ row }) => {
@@ -9,7 +10,7 @@ export const columns = [
   },
   {
     accessorKey: "firstName",
-    Header: "First Name",
+    header: "First Name",
     cell: ({ row }) => {
       return <p className="text-14-medium">{row.firstName}</p>;
     },
@@ -17,7 +18,7 @@ export const columns = [
 
   {
     accessorKey: "lastName",
-    Header: "Last Name",
+    header: "Last Name",
     cell: ({ row }) => {
       return <p className="text-14-medium">{row.lastName}</p>;
     },
@@ -25,7 +26,7 @@ export const columns = [
   // admission id
   {
     accessorKey: "admissionId",
-    Header: "Admission ID",
+    header: "Admission ID",
     cell: ({ row }) => {
       return <p className="text-14-medium">{row.admissionId}</p>;
     },
@@ -33,7 +34,7 @@ export const columns = [
   // status
   {
     accessorKey: "status",
-    Header: "Status",
+    header: "Status",
     cell: ({ row }) => {
       const rowStatus = row.original;
       return (
@@ -43,5 +44,18 @@ export const columns = [
       );
     },
   },
-  
+  // date issued
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => {
+      const rowItems = row.original;
+      return (
+        <p className="text-14-regular min-w-[100px]">
+          {FormatDateTime(rowItems.createdAt).rowItems}
+        </p>
+      );
+    },
+  },
 ];
+export default columns;

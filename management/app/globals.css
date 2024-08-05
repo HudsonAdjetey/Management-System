@@ -313,6 +313,9 @@ body.dark {
   .shad-table-row {
     @apply border-b border-dark-400 text-light-200 !important;
   }
+  .shad-table-row:nth-of-type(even) {
+    background-color: #1c2023;
+  }
 
   .shad-otp {
     @apply w-full flex justify-between !important;

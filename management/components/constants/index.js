@@ -25,8 +25,8 @@ export const registerFormKeys = {
 };
 
 export const StatusIcons = {
-  pending: "/assets/Icons/check.svg",
-  approved: "/assets/Icons/checked.svg",
+  pending: "/assets/Icons/pending.svg",
+  approved: "/assets/Icons/check.svg",
   rejected: "/assets/Icons/cancelled.svg",
   // expired: "/assets/Icons/cross.svg",
 };
