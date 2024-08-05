@@ -114,13 +114,24 @@ export const ErrorFunc = (toast, toastConfig) => {
 // format date
 
 export const FormatDateTime = (date) => {
-  const options = {
+  const dateTimeOptions = {
     month: "short",
     day: "numeric",
     year: "numeric",
-    hour: "numeric", 
+    hour: "numeric",
     minute: "numeric",
     hour12: true,
   };
-  return new Date(date).toLocaleString("en-US", options);
+
+  const dateDayOptions = {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }
+
+  const dateOptions = {
+    
+  }
+  // return new Date(date).toLocaleString("en-US", options);
 };
