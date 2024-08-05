@@ -5,14 +5,19 @@ import Link from "next/link";
 import React from "react";
 import StatCard from "@/components/StatCard";
 import DataTable from "@/components/table/DataTable";
-
+import columns from "@/components/table/columns";
 const page = () => {
   return (
     <div className="mx-auto flex  flex-col space-y-14">
       <header className="admin-header">
         <div className="logo-menu flex  items-center gap-5 ">
           <span className="border-r-2 px-2  border-[#EBF3FF]">
-            <Image src={Icons.MenuIcon} width={30} height={30} />
+            <Image
+              alt="Menu Icon"
+              src={Icons.MenuIcon}
+              width={30}
+              height={30}
+            />
           </span>
           <Link href={"/"} className="cursor-pointer">
             <Image
@@ -20,6 +25,7 @@ const page = () => {
               width={32}
               height={162}
               className="h-8 w-fit"
+              alt="logo"
             />
           </Link>
         </div>
@@ -64,7 +70,7 @@ const page = () => {
           {/* admin stat */}
         </section>
         {/* data table */}
-        <DataTable />
+        <DataTable /* columns={columns} data={[]} */ />
         {/* data table */}
       </main>
     </div>
