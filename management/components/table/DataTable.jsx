@@ -40,12 +40,22 @@ const DataTable = () => {
 
   const columns = [
     {
+      header: "#",
+      cell: ({ row }) => {
+        return <p className="text-14-medium ">{row.index + 1}</p>;
+      },
+    },
+    {
       header: "First Name",
       accessorKey: "firstName",
     },
     {
       header: "Last Name",
       accessorKey: "lastName",
+      cell: ({ row }) => {
+        const appointment = row.original;
+        return <p className="text-14-medium ">{appointment.lastName}</p>;
+      },
     },
     {
       header: "Age",
@@ -94,6 +104,27 @@ const DataTable = () => {
             </TableRow>
           ))}
         </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() ** "Selected"}
+                className="shad-table-row"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow className="shad-table-row">
+              <TableCell colSpan={columns.length}>No data to display</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
       </Table>
     </div>
   );
