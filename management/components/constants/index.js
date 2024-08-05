@@ -23,3 +23,10 @@ export const registerFormKeys = {
   confirmPassword: "",
   email: "",
 };
+
+export const StatusIcons = {
+  pending: "/assets/Icons/check.svg",
+  approved: "/assets/Icons/checked.svg",
+  rejected: "/assets/Icons/cancelled.svg",
+  // expired: "/assets/Icons/cross.svg",
+};
