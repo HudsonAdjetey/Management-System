@@ -25,7 +25,7 @@ const DataTable = ({ columns, data }) => {
     data,
     initialState: { pageIndex: 0 },
     manualPagination: true,
-    pageCount: Math.ceil(data.length / 10),
+    pageCount: Math.ceil(data?.length / 10),
     pageSize: 10,
     getRowModel: getPaginationRowModel,
     getCoreRowModel: getCoreRowModel,
@@ -43,7 +43,7 @@ const DataTable = ({ columns, data }) => {
       <Table className="shad-table">
         <TableHeader className="bg-dark-200">
           <TableRow>
-            {table.columns.map((column) => (
+            {table?.columns?.map((column) => (
               <TableHeader key={column.id}>
                 <TableSortLabel {...column.getSortByToggleProps()} />
                 <TableCell {...column.getHeaderProps()}>

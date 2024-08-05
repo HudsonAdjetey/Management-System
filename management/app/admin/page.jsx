@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import StatCard from "@/components/StatCard";
+import DataTable from "@/components/table/DataTable";
 
 const page = () => {
   return (
@@ -59,8 +60,12 @@ const page = () => {
             count={4}
             icon={Icons.AdminIcon}
           />
+
+          {/* admin stat */}
         </section>
-        {/* admin stat */}
+        {/* data table */}
+        <DataTable />
+        {/* data table */}
       </main>
     </div>
   );
