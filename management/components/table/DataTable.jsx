@@ -80,6 +80,10 @@ const DataTable = () => {
     data,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pageIndex: 0,
+      pageSize: 10,
+    },
   });
 
   return (
@@ -109,11 +113,14 @@ const DataTable = () => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() ** "Selected"}
-                className="shad-table-row"
+                data-state={row.getIsSelected() && "Selected"}
+                className="shad-table-row hover:bg-red-500"
+                onClick={() => {
+                  console.log(row.id);
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell className="hover:bg-blue-500" key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -126,6 +133,10 @@ const DataTable = () => {
           )}
         </TableBody>
       </Table>
+      <div className="table-actions">
+        <Button>Previous</Button>
+        <Button>Previous</Button>
+      </div>
     </div>
   );
 };

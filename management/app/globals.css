@@ -303,11 +303,11 @@ body.dark {
   }
 
   .shad-table {
-    @apply rounded-lg overflow-hidden !important;
+    @apply rounded-lg overflow-x-scroll !important;
   }
 
   .shad-table-row-header {
-    @apply border-b border-dark-400 text-light-200 hover:bg-transparent !important;
+    @apply border-b w-full border-dark-400 text-light-200 hover:bg-transparent !important;
   }
 
   .shad-table-row {
