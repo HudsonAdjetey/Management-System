@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   getPaginationRowModel,
   ColumnDef,
@@ -18,10 +18,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import ReactPaginate from "react-paginate";
+
 import StatusBadge from "../StatusBadge";
 import { FormatDateTime } from "@/lib/utils";
 import dataInfo from "@/components/constants/dummy";
 import Image from "next/image";
+
 const DataTable = () => {
   const columns = [
     {
@@ -37,7 +40,6 @@ const DataTable = () => {
         return <p className="text-14-medium">{row.original.firstName}</p>;
       },
     },
-
     {
       accessorKey: "lastName",
       header: "Last Name",
@@ -92,7 +94,6 @@ const DataTable = () => {
       pageSize: 10,
     },
   });
-
   return (
     <div className="data-table">
       <Table className="shad-table">
@@ -155,6 +156,14 @@ const DataTable = () => {
             height={24}
           />
         </Button>
+        Page {table.getState().pagination.pageIndex + 1} of{" "}
+        {table.getPageCount()}
+        {/* NOT IGNORED  */}
+        {/*   <PaginatedItems
+          itemsPerPage={4}
+          data={dataInfo}
+          items={dataInfo?.length || 0}
+        /> */}
         <Button className="shad-gray-btn">
           <Image
             src={"/assets/Icons/arrowRight.svg"}
@@ -169,5 +178,48 @@ const DataTable = () => {
     </div>
   );
 };
+
+// @desc -
+// This component is used to render paginated items.
+// Currently, it's not being used in the DataTable component.
+// It's here for future reference or usage.
+//
+// @params - itemsPerPage: Number of items per page
+//           data: Array of items to be paginated
+
+/* function PaginatedItems({ items, data }) {
+  // items offset
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 5;
+
+  const endOffset = itemOffset + itemsPerPage;
+  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+  const currentItems = data.slice(itemOffset, endOffset);
+  let pageCount = data ? Math.ceil(items.length / itemsPerPage) : 1;
+
+  const handlePageClick = (event) => {
+    console.log("event ", event);
+    const newOffset = (event.selected * itemsPerPage) % data?.length;
+    console.log(newOffset);
+    setItemOffset(newOffset);
+    console.log(
+      `User requested page number ${event.selected}, which is offset ${newOffset}`
+    );
+  };
+
+  return (
+    <>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={Number(pageCount)}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+      />
+    </>
+  );
+} */
 
 export default DataTable;
