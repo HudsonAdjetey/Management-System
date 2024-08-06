@@ -1,5 +1,3 @@
-
-
 const Columns = (FormatDateTime, StatusBadge) => {
   return [
     {
@@ -12,15 +10,14 @@ const Columns = (FormatDateTime, StatusBadge) => {
       accessorKey: "firstName",
       header: "First Name",
       cell: ({ row }) => {
-        return <p className="text-14-medium">{row.firstName}</p>;
+        return <p className="text-14-medium">{row.original.firstName}</p>;
       },
     },
-
     {
       accessorKey: "lastName",
       header: "Last Name",
       cell: ({ row }) => {
-        return <p className="text-14-medium">{row.lastName}</p>;
+        return <p className="text-14-medium">{row.original.lastName}</p>;
       },
     },
     // admission id
@@ -28,7 +25,7 @@ const Columns = (FormatDateTime, StatusBadge) => {
       accessorKey: "admissionId",
       header: "Admission ID",
       cell: ({ row }) => {
-        return <p className="text-14-medium">{row.admissionId}</p>;
+        return <p className="text-14-medium">{row.original.admissionId}</p>;
       },
     },
     // status
@@ -50,9 +47,10 @@ const Columns = (FormatDateTime, StatusBadge) => {
       header: "Created At",
       cell: ({ row }) => {
         const rowItems = row.original;
+
         return (
           <p className="text-14-regular min-w-[100px]">
-            {FormatDateTime(rowItems.createdAt).rowItems}
+            {FormatDateTime(rowItems.createdAt).dateTime}
           </p>
         );
       },
