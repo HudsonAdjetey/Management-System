@@ -25,8 +25,8 @@ import { FormatDateTime } from "@/lib/utils";
 import dataInfo from "@/components/constants/dummy";
 import Image from "next/image";
 
-const DataTable = ({columns}) => {
- /*  const columns = [
+const DataTable = () => {
+  const columns = [
     {
       header: "#",
       cell: ({ row }) => {
@@ -82,7 +82,7 @@ const DataTable = ({columns}) => {
         );
       },
     },
-  ]; */
+  ];
 
   const table = useReactTable({
     columns,

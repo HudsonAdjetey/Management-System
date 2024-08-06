@@ -5,7 +5,6 @@ import Link from "next/link";
 import React from "react";
 import StatCard from "@/components/StatCard";
 import DataTable from "@/components/table/DataTable";
-import columns from "@/components/table/columns";
 const page = () => {
   return (
     <div className="mx-auto flex  flex-col space-y-14">
@@ -70,7 +69,7 @@ const page = () => {
           {/* admin stat */}
         </section>
         {/* data table */}
-        <DataTable /* columns={columns} data={[]} */ />
+        <DataTable />
         {/* data table */}
       </main>
     </div>
