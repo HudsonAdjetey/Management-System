@@ -25,8 +25,8 @@ import { FormatDateTime } from "@/lib/utils";
 import dataInfo from "@/components/constants/dummy";
 import Image from "next/image";
 
-const DataTable = () => {
-  const columns = [
+const DataTable = ({columns}) => {
+ /*  const columns = [
     {
       header: "#",
       cell: ({ row }) => {
@@ -82,7 +82,7 @@ const DataTable = () => {
         );
       },
     },
-  ];
+  ]; */
 
   const table = useReactTable({
     columns,
@@ -156,8 +156,10 @@ const DataTable = () => {
             height={24}
           />
         </Button>
-        Page {table.getState().pagination.pageIndex + 1} of{" "}
-        {table.getPageCount()}
+        <p className="font-normal text-sm text-gray-400">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </p>
         {/* NOT IGNORED  */}
         {/*   <PaginatedItems
           itemsPerPage={4}
