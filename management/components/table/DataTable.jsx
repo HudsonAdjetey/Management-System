@@ -26,8 +26,9 @@ import dataInfo from "@/components/constants/dummy";
 import Image from "next/image";
 import Columns from "@/components/table/columns";
 const DataTable = () => {
+  const columns = Columns(FormatDateTime, StatusBadge)
   const table = useReactTable({
-    columns: Columns(FormatDateTime, StatusBadge),
+    columns,
     data: dataInfo,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
